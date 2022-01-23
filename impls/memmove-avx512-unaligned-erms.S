@@ -489,8 +489,8 @@ __memmove_avx512_unaligned_erms:
  vmovdqu64 %zmm19, -64(%rdi, %rdx)
  ; ret
 
-.globl __memcpy_avx512_unaligned_erms 
-__memcpy_avx512_unaligned_erms:
+.globl __memcpy_avx512_unaligned_erms
+.set __memcpy_avx512_unaligned_erms, __memmove_avx512_unaligned_erms
 
-.globl __memcpy_avx512_unaligned 
-__memcpy_avx512_unaligned:
+.globl __memcpy_avx512_unaligned
+.set __memcpy_avx512_unaligned, __memmove_avx512_unaligned

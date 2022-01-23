@@ -370,5 +370,5 @@ __memmove_avx512_no_vzeroupper:
  vmovups %zmm5, -0x40(%r8)
  jmp .Lcheck
 
-.globl __memcpy_avx512_no_vzeroupper 
-__memcpy_avx512_no_vzeroupper:
+.globl __memcpy_avx512_no_vzeroupper
+.set __memcpy_avx512_no_vzeroupper, __memmove_avx512_no_vzeroupper
