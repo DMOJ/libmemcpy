@@ -260,34 +260,34 @@ memcpy_t *memcpy_fast;
 memcpy_t *memmove_fast;
 memcpy_t *mempcpy_fast;
 
-#define generate_select_memcpy(func) \
-    static memcpy_t *select_##func(void) { \
-        if (avx_fast_unaligned_load) { \
-            if (rtm) { \
-                if (erms) \
-                    return func##_avx_unaligned_erms_rtm; \
-                return func##_avx_unaligned_rtm; \
-            } \
-            if (erms) \
-                return func##_avx_unaligned_erms; \
-            return func##_avx_unaligned; \
-        } \
- \
-        if (!ssse3 || fast_unaligned_copy) { \
-            if (erms) \
-                return func##_sse2_unaligned_erms; \
-            return func##_sse2_unaligned; \
-        } \
- \
-        if (fast_copy_backward) \
-            return func##_ssse3_back; \
- \
-        return func##_ssse3; \
-    }
+#define CONCAT2(a, b) a ## b
+#define CONCAT(a, b) CONCAT2(a, b)
+#define STRINGIFY(x) #x
 
-generate_select_memcpy(memcpy)
-generate_select_memcpy(memmove)
-generate_select_memcpy(mempcpy)
+#define RESULT_TYPE memcpy_t *
+#define RESULT(x) x
+
+#define FUNCTION memcpy
+#include "select.h"
+#undef FUNCTION
+
+#define FUNCTION memmove
+#include "select.h"
+#undef FUNCTION
+
+#define FUNCTION mempcpy
+#include "select.h"
+#undef FUNCTION
+
+#undef RESULT
+#define RESULT(x) STRINGIFY(x)
+#undef RESULT_TYPE
+#define RESULT_TYPE const char *
+
+#define FUNC_NAME select_memcpy_name
+#define FUNCTION memcpy
+#include "select.h"
+#undef FUNCTION
 
 __attribute__((constructor))
 static void init_cpu_flags(void) {
@@ -386,4 +386,5 @@ void libmemcpy_report_cpu(void) {
            PRId64 "-way associative\n", l3_size, l3_line, l3_assoc);
     printf("By usage: %" PRId64 " bytes data, %" PRId64 " bytes core, %" PRId64
            " bytes shared\n", data, core, shared);
+    printf("memcpy selected: %s\n", select_memcpy_name());
 }

@@ -27,7 +27,7 @@
 extern "C" {
 #endif
 
-typedef void memcpy_t(void *dst, const void *src, size_t len);
+typedef void *memcpy_t(void *dst, const void *src, size_t len);
 
 // BEGIN GENERATED CODE
 
