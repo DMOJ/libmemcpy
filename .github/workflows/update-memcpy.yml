@@ -1,5 +1,5 @@
 name: update-memcpy
-on: [push, pull_request]
+on: [push]
 jobs:
   build:
     if: github.repository == 'DMOJ/libmemcpy'
