@@ -206,12 +206,11 @@ static void init_cpu_flags(void) {
         __cpuid(1, eax, ebx, ecx, edx);
         family = (eax >> 8) & 0xf;
         model = (eax >> 4) & 0xf;
+        model += (eax >> 12) & 0xf0;
         stepping = eax & 0xf;
 
-        if (family == 0xf) {
+        if (family == 0xf)
             family += (eax >> 20) & 0xf;
-            model += (eax >> 12) & 0xf0;
-        }
     }
 
     switch (vendor) {
