@@ -19,7 +19,8 @@
  */
 
 #include <cpuid.h>
-#include <stdint.h>
+#include <inttypes.h>
+#include <stdio.h>
 #include <string.h>
 
 /* Data cache size for use in memory and string routines, typically
@@ -65,10 +66,13 @@ enum vendor {
 };
 
 static enum vendor vendor;
+static uint32_t family;
+static uint32_t model;
+static uint32_t stepping;
 
 __attribute__((constructor))
 static void init_cpu_flags(void) {
-    unsigned max_cpuid;
+    uint32_t max_cpuid;
     union {
         char id[12];
         struct {
@@ -84,5 +88,36 @@ static void init_cpu_flags(void) {
     else
         vendor = VENDOR_UNKNOWN;
 
+    uint32_t eax, ebx, ecx, edx;
+    if (max_cpuid >= 1) {
+        __cpuid(1, eax, ebx, ecx, edx);
+        family = (eax >> 8) & 0xf;
+        model = (eax >> 4) & 0xf;
+        stepping = eax & 0xf;
+
+        if (family == 0xf) {
+            family += (eax >> 20) & 0xf;
+            model += (eax >> 12) & 0xf0;
+        }
+    }
+
     // TODO: implement cache size detection.
+}
+
+void libmemcpy_report_cpu(void) {
+    const char *vendor_name;
+
+    switch (vendor) {
+        case VENDOR_AMD:
+            vendor_name = "AMD";
+            break;
+        case VENDOR_INTEL:
+            vendor_name = "Intel";
+            break;
+        default:
+            vendor_name = "Unknown";
+    }
+
+    printf("CPU: %s family %" PRIx32 "h, model %" PRIx32 "h, stepping %"
+           PRIx32 "h\n", vendor_name, family, model, stepping);
 }

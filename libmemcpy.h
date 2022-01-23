@@ -119,6 +119,7 @@ memcpy_t mempcpy_ssse3_back;
 
 // END GENERATED CODE
 
+void libmemcpy_report_cpu(void);
 
 
 #ifdef __cplusplus
