@@ -1,0 +1,25 @@
+cmake_minimum_required(VERSION 3.0)
+project(libmemcpy LANGUAGES C ASM-ATT)
+set(CMAKE_C_STANDARD 99)
+
+add_library(memcpy STATIC
+	src/cpu.c
+# BEGIN CMAKE ASM FILES
+    impls/memmove-avx-unaligned-erms.s
+    impls/memcpy-ssse3.s
+    impls/memmove-evex-unaligned-erms.s
+    impls/memmove-ssse3.s
+    impls/memcpy-ssse3-back.s
+    impls/memmove-avx512-unaligned-erms.s
+    impls/memmove-avx-unaligned-erms-rtm.s
+    impls/memmove-avx512-no-vzeroupper.s
+    impls/memmove-ssse3-back.s
+    impls/memmove-sse2-unaligned-erms.s
+# END CMAKE ASM FILES
+)
+
+target_include_directories(memcpy
+	PUBLIC
+		$<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>
+		$<INSTALL_INTERFACE:include>
+)

@@ -5,13 +5,16 @@ from glob import glob
 from pathlib import Path
 
 DIR = Path(__file__).parent
+IMPL_GLOB = str(DIR / 'impls' / '*.s')
+HEADER = DIR / 'include' / 'libmemcpy.h'
+CMAKE = DIR / 'CMakeLists.txt'
 reglobl = re.compile(r'\.globl\s+(\w+)')
 
 
 def get_functions():
     result = []
 
-    for file in glob(str(DIR / 'impls' / '*.s')):
+    for file in glob(IMPL_GLOB):
         with open(file) as f:
             for line in f:
                 match = reglobl.search(line)
@@ -39,25 +42,33 @@ def generate_mingw_shim(func):
 '''
 
 
-def update_header(functions):
+def get_ambles(f, comment, name):
     state = 0
+    begin = f'{comment} BEGIN {name}'
+    end = f'{comment} END {name}'
     preamble = []
     postamble = []
 
-    with open(DIR / 'libmemcpy.h') as f:
-        for line in f:
-            if state == 0:
-                if '// BEGIN GENERATED CODE' in line:
-                    state = 1
-                preamble.append(line)
-            elif state == 1:
-                if '// END GENERATED CODE' in line:
-                    state = 2
-                    postamble.append(line)
-            else:
+    for line in f:
+        if state == 0:
+            if begin in line:
+                state = 1
+            preamble.append(line)
+        elif state == 1:
+            if end in line:
+                state = 2
                 postamble.append(line)
+        else:
+            postamble.append(line)
 
-    with open(DIR / 'libmemcpy.h', 'w') as f:
+    return preamble, postamble
+
+
+def update_header(functions):
+    with open(HEADER) as f:
+        preamble, postamble = get_ambles(f, '//', 'GENERATED CODE')
+
+    with open(HEADER, 'w') as f:
         for line in preamble:
             f.write(line)
 
@@ -78,6 +89,21 @@ def update_header(functions):
             f.write(line)
 
 
+def update_cmake():
+    with open(CMAKE) as f:
+        preamble, postamble = get_ambles(f, '#', 'CMAKE ASM FILES')
+
+    with open(CMAKE, 'w') as f:
+        for line in preamble:
+            f.write(line)
+
+        for file in glob(IMPL_GLOB):
+            print(f'    {Path(file).relative_to(DIR).as_posix()}', file=f)
+
+        for line in postamble:
+            f.write(line)
+
+
 def main():
     functions = get_functions()
 
@@ -86,6 +112,7 @@ def main():
             print(generate_mingw_shim(func), file=f)
 
     update_header(functions)
+    update_cmake()
 
 
 if __name__ == '__main__':
