@@ -20,6 +20,7 @@
 
 #include <cpuid.h>
 #include <inttypes.h>
+#include <stdbool.h>
 #include <stdio.h>
 #include <string.h>
 
@@ -39,9 +40,6 @@ long int __x86_shared_non_temporal_threshold = 1024 * 1024 * 3 / 4;
 
 /* Threshold to use Enhanced REP MOVSB.  */
 long int __x86_rep_movsb_threshold = 2048;
-
-/* Threshold to use Enhanced REP STOSB.  */
-long int __x86_rep_stosb_threshold = 2048;
 
 /* Threshold to stop using Enhanced REP MOVSB.  */
 // Defaults to non-temporal threshold.
@@ -65,10 +63,45 @@ enum vendor {
     VENDOR_UNKNOWN,
 };
 
+static uint32_t max_cpuid;
 static enum vendor vendor;
 static uint32_t family;
 static uint32_t model;
 static uint32_t stepping;
+
+static bool osxsave;
+static bool avx;
+static bool avx2;
+static bool fsrm;
+static bool xmm;
+static bool ymm;
+static bool avx_fast_unaligned_load;
+
+#define BIT_XMM_STATE (1 << 1)
+#define BIT_YMM_STATE (2 << 1)
+
+static void populate_features(uint32_t ecx, uint32_t edx) {
+    osxsave = ecx & (1 << 27);
+    avx = ecx & (1 << 28);
+
+    if (max_cpuid >= 7) {
+        uint32_t eax, ebx;
+        __cpuid(7, eax, ebx, ecx, edx);
+
+        avx2 = ebx & (1 << 5);
+        fsrm = edx & (1 << 4);
+    }
+
+    if (osxsave) {
+        uint32_t xcrlow, xcrhigh;
+        __asm__("xgetbv" : "=a"(xcrlow), "=d"(xcrhigh) : "c"(0));
+        xmm = xcrlow & BIT_XMM_STATE;
+        ymm = xcrlow & (BIT_XMM_STATE | BIT_YMM_STATE) ==
+            (BIT_XMM_STATE | BIT_YMM_STATE);
+    }
+
+    avx_fast_unaligned_load = avx && avx2 && ymm;
+}
 
 static int64_t l1i_size = -1;
 static int64_t l1i_line = -1;
@@ -185,7 +218,6 @@ static void populate_amd_cache(void) {
 
 __attribute__((constructor))
 static void init_cpu_flags(void) {
-    uint32_t max_cpuid;
     union {
         char id[12];
         struct {
@@ -211,6 +243,8 @@ static void init_cpu_flags(void) {
 
         if (family == 0xf)
             family += (eax >> 20) & 0xf;
+
+        populate_features(ecx, edx);
     }
 
     switch (vendor) {
@@ -221,7 +255,32 @@ static void init_cpu_flags(void) {
             break;
     }
 
-    // TODO: implement cache size detection.
+    if (data > 0xFF) {
+        __x86_data_cache_size = data & ~0xFF;
+        __x86_data_cache_size_half = __x86_data_cache_size / 2;
+    }
+
+    if (shared > 0xFF) {
+        __x86_shared_cache_size = shared & ~0xFF;
+        __x86_shared_cache_size_half = __x86_shared_cache_size / 2;
+    }
+
+    if (shared >= 0)
+        __x86_shared_non_temporal_threshold = shared * 3 / 4;
+
+    if (fsrm)
+        __x86_rep_movsb_threshold = 2112;
+    else if (avx_fast_unaligned_load)
+        __x86_rep_movsb_threshold = 8192;
+
+    if (vendor == VENDOR_AMD)
+        __x86_rep_movsb_stop_threshold = core;
+    else
+        __x86_rep_movsb_stop_threshold = __x86_shared_non_temporal_threshold;
+
+    // avoid short distance rep movsb on processors with fsrm
+    if (fsrm)
+        __x86_string_control |= 1;
 }
 
 void libmemcpy_report_cpu(void) {
