@@ -30,92 +30,92 @@ typedef void memcpy_t(void *dst, const void *src, size_t len);
 // BEGIN GENERATED CODE
 
 #ifndef __MINGW32__
-#define memmove_ssse3_back __memmove_ssse3_back
-#define memmove_ssse3 __memmove_ssse3
-#define mempcpy_avx512_no_vzeroupper __mempcpy_avx512_no_vzeroupper
-#define memmove_avx512_no_vzeroupper __memmove_avx512_no_vzeroupper
 #define memcpy_avx512_no_vzeroupper __memcpy_avx512_no_vzeroupper
-#define mempcpy_ssse3_back __mempcpy_ssse3_back
-#define memcpy_ssse3_back __memcpy_ssse3_back
-#define mempcpy_sse2_unaligned __mempcpy_sse2_unaligned
-#define memmove_sse2_unaligned __memmove_sse2_unaligned
-#define mempcpy_erms __mempcpy_erms
-#define memmove_erms __memmove_erms
-#define memcpy_erms __memcpy_erms
-#define mempcpy_sse2_unaligned_erms __mempcpy_sse2_unaligned_erms
-#define memmove_sse2_unaligned_erms __memmove_sse2_unaligned_erms
-#define memcpy_sse2_unaligned_erms __memcpy_sse2_unaligned_erms
-#define memcpy_sse2_unaligned __memcpy_sse2_unaligned
-#define mempcpy_avx512_unaligned __mempcpy_avx512_unaligned
-#define memmove_avx512_unaligned __memmove_avx512_unaligned
-#define mempcpy_avx512_unaligned_erms __mempcpy_avx512_unaligned_erms
-#define memmove_avx512_unaligned_erms __memmove_avx512_unaligned_erms
-#define memcpy_avx512_unaligned_erms __memcpy_avx512_unaligned_erms
 #define memcpy_avx512_unaligned __memcpy_avx512_unaligned
-#define mempcpy_ssse3 __mempcpy_ssse3
-#define memcpy_ssse3 __memcpy_ssse3
-#define mempcpy_evex_unaligned __mempcpy_evex_unaligned
-#define memmove_evex_unaligned __memmove_evex_unaligned
-#define mempcpy_evex_unaligned_erms __mempcpy_evex_unaligned_erms
-#define memmove_evex_unaligned_erms __memmove_evex_unaligned_erms
-#define memcpy_evex_unaligned_erms __memcpy_evex_unaligned_erms
-#define memcpy_evex_unaligned __memcpy_evex_unaligned
-#define mempcpy_avx_unaligned_rtm __mempcpy_avx_unaligned_rtm
-#define memmove_avx_unaligned_rtm __memmove_avx_unaligned_rtm
-#define mempcpy_avx_unaligned_erms_rtm __mempcpy_avx_unaligned_erms_rtm
-#define memmove_avx_unaligned_erms_rtm __memmove_avx_unaligned_erms_rtm
+#define memcpy_avx512_unaligned_erms __memcpy_avx512_unaligned_erms
+#define memcpy_avx_unaligned __memcpy_avx_unaligned
+#define memcpy_avx_unaligned_erms __memcpy_avx_unaligned_erms
 #define memcpy_avx_unaligned_erms_rtm __memcpy_avx_unaligned_erms_rtm
 #define memcpy_avx_unaligned_rtm __memcpy_avx_unaligned_rtm
-#define mempcpy_avx_unaligned __mempcpy_avx_unaligned
+#define memcpy_erms __memcpy_erms
+#define memcpy_evex_unaligned __memcpy_evex_unaligned
+#define memcpy_evex_unaligned_erms __memcpy_evex_unaligned_erms
+#define memcpy_sse2_unaligned __memcpy_sse2_unaligned
+#define memcpy_sse2_unaligned_erms __memcpy_sse2_unaligned_erms
+#define memcpy_ssse3 __memcpy_ssse3
+#define memcpy_ssse3_back __memcpy_ssse3_back
+#define memmove_avx512_no_vzeroupper __memmove_avx512_no_vzeroupper
+#define memmove_avx512_unaligned __memmove_avx512_unaligned
+#define memmove_avx512_unaligned_erms __memmove_avx512_unaligned_erms
 #define memmove_avx_unaligned __memmove_avx_unaligned
-#define mempcpy_avx_unaligned_erms __mempcpy_avx_unaligned_erms
 #define memmove_avx_unaligned_erms __memmove_avx_unaligned_erms
-#define memcpy_avx_unaligned_erms __memcpy_avx_unaligned_erms
-#define memcpy_avx_unaligned __memcpy_avx_unaligned
+#define memmove_avx_unaligned_erms_rtm __memmove_avx_unaligned_erms_rtm
+#define memmove_avx_unaligned_rtm __memmove_avx_unaligned_rtm
+#define memmove_erms __memmove_erms
+#define memmove_evex_unaligned __memmove_evex_unaligned
+#define memmove_evex_unaligned_erms __memmove_evex_unaligned_erms
+#define memmove_sse2_unaligned __memmove_sse2_unaligned
+#define memmove_sse2_unaligned_erms __memmove_sse2_unaligned_erms
+#define memmove_ssse3 __memmove_ssse3
+#define memmove_ssse3_back __memmove_ssse3_back
+#define mempcpy_avx512_no_vzeroupper __mempcpy_avx512_no_vzeroupper
+#define mempcpy_avx512_unaligned __mempcpy_avx512_unaligned
+#define mempcpy_avx512_unaligned_erms __mempcpy_avx512_unaligned_erms
+#define mempcpy_avx_unaligned __mempcpy_avx_unaligned
+#define mempcpy_avx_unaligned_erms __mempcpy_avx_unaligned_erms
+#define mempcpy_avx_unaligned_erms_rtm __mempcpy_avx_unaligned_erms_rtm
+#define mempcpy_avx_unaligned_rtm __mempcpy_avx_unaligned_rtm
+#define mempcpy_erms __mempcpy_erms
+#define mempcpy_evex_unaligned __mempcpy_evex_unaligned
+#define mempcpy_evex_unaligned_erms __mempcpy_evex_unaligned_erms
+#define mempcpy_sse2_unaligned __mempcpy_sse2_unaligned
+#define mempcpy_sse2_unaligned_erms __mempcpy_sse2_unaligned_erms
+#define mempcpy_ssse3 __mempcpy_ssse3
+#define mempcpy_ssse3_back __mempcpy_ssse3_back
 #endif
 
-memcpy_t memmove_ssse3_back;
-memcpy_t memmove_ssse3;
-memcpy_t mempcpy_avx512_no_vzeroupper;
-memcpy_t memmove_avx512_no_vzeroupper;
 memcpy_t memcpy_avx512_no_vzeroupper;
-memcpy_t mempcpy_ssse3_back;
-memcpy_t memcpy_ssse3_back;
-memcpy_t mempcpy_sse2_unaligned;
-memcpy_t memmove_sse2_unaligned;
-memcpy_t mempcpy_erms;
-memcpy_t memmove_erms;
-memcpy_t memcpy_erms;
-memcpy_t mempcpy_sse2_unaligned_erms;
-memcpy_t memmove_sse2_unaligned_erms;
-memcpy_t memcpy_sse2_unaligned_erms;
-memcpy_t memcpy_sse2_unaligned;
-memcpy_t mempcpy_avx512_unaligned;
-memcpy_t memmove_avx512_unaligned;
-memcpy_t mempcpy_avx512_unaligned_erms;
-memcpy_t memmove_avx512_unaligned_erms;
-memcpy_t memcpy_avx512_unaligned_erms;
 memcpy_t memcpy_avx512_unaligned;
-memcpy_t mempcpy_ssse3;
-memcpy_t memcpy_ssse3;
-memcpy_t mempcpy_evex_unaligned;
-memcpy_t memmove_evex_unaligned;
-memcpy_t mempcpy_evex_unaligned_erms;
-memcpy_t memmove_evex_unaligned_erms;
-memcpy_t memcpy_evex_unaligned_erms;
-memcpy_t memcpy_evex_unaligned;
-memcpy_t mempcpy_avx_unaligned_rtm;
-memcpy_t memmove_avx_unaligned_rtm;
-memcpy_t mempcpy_avx_unaligned_erms_rtm;
-memcpy_t memmove_avx_unaligned_erms_rtm;
+memcpy_t memcpy_avx512_unaligned_erms;
+memcpy_t memcpy_avx_unaligned;
+memcpy_t memcpy_avx_unaligned_erms;
 memcpy_t memcpy_avx_unaligned_erms_rtm;
 memcpy_t memcpy_avx_unaligned_rtm;
-memcpy_t mempcpy_avx_unaligned;
+memcpy_t memcpy_erms;
+memcpy_t memcpy_evex_unaligned;
+memcpy_t memcpy_evex_unaligned_erms;
+memcpy_t memcpy_sse2_unaligned;
+memcpy_t memcpy_sse2_unaligned_erms;
+memcpy_t memcpy_ssse3;
+memcpy_t memcpy_ssse3_back;
+memcpy_t memmove_avx512_no_vzeroupper;
+memcpy_t memmove_avx512_unaligned;
+memcpy_t memmove_avx512_unaligned_erms;
 memcpy_t memmove_avx_unaligned;
-memcpy_t mempcpy_avx_unaligned_erms;
 memcpy_t memmove_avx_unaligned_erms;
-memcpy_t memcpy_avx_unaligned_erms;
-memcpy_t memcpy_avx_unaligned;
+memcpy_t memmove_avx_unaligned_erms_rtm;
+memcpy_t memmove_avx_unaligned_rtm;
+memcpy_t memmove_erms;
+memcpy_t memmove_evex_unaligned;
+memcpy_t memmove_evex_unaligned_erms;
+memcpy_t memmove_sse2_unaligned;
+memcpy_t memmove_sse2_unaligned_erms;
+memcpy_t memmove_ssse3;
+memcpy_t memmove_ssse3_back;
+memcpy_t mempcpy_avx512_no_vzeroupper;
+memcpy_t mempcpy_avx512_unaligned;
+memcpy_t mempcpy_avx512_unaligned_erms;
+memcpy_t mempcpy_avx_unaligned;
+memcpy_t mempcpy_avx_unaligned_erms;
+memcpy_t mempcpy_avx_unaligned_erms_rtm;
+memcpy_t mempcpy_avx_unaligned_rtm;
+memcpy_t mempcpy_erms;
+memcpy_t mempcpy_evex_unaligned;
+memcpy_t mempcpy_evex_unaligned_erms;
+memcpy_t mempcpy_sse2_unaligned;
+memcpy_t mempcpy_sse2_unaligned_erms;
+memcpy_t mempcpy_ssse3;
+memcpy_t mempcpy_ssse3_back;
 
 // END GENERATED CODE
 
