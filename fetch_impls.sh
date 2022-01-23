@@ -21,6 +21,14 @@ cd glibc/build
 make -j$(nproc)
 
 for impl in ../sysdeps/x86_64/multiarch/mem{cpy,move}*.S; do
+  impl_basename="$(basename "${impl}")"
+  case "${impl_basename}" in
+    # Only ever included by other copy implementations with differing values of
+    # VEC_SIZE etc., so can't be built standalone.
+    memmove-vec-unaligned-erms.S)
+      continue;;
+  esac
+
   gcc "${impl}" \
     -c \
     -I../include \
@@ -72,7 +80,7 @@ for impl in ../sysdeps/x86_64/multiarch/mem{cpy,move}*.S; do
     -DASSEMBLER \
     -g \
     -S \
-    > "${workdir}/impls/$(basename "${impl}")" || true
+    > "${workdir}/impls/${impl_basename}"
 done
 
 mkdir -p "${dir}/impls"
