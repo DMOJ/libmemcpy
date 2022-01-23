@@ -21,3 +21,17 @@ jobs:
       run: |
         cd build
         make -j$(nproc)
+
+  windows-native:
+    runs-on: windows-latest
+    steps:
+    - uses: actions/checkout@v2
+    - name: Configure libmemcpy
+      run: |
+        mkdir build
+        cd build
+        cmake -G "MinGW Makefiles" ..
+    - name: Build libmemcpy
+      run: |
+        cd build
+        mingw32-make "-j$([Environment]::ProcessorCount)"
