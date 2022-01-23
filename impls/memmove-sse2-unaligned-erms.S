@@ -59,8 +59,9 @@ __memmove_erms:
  rep movsb
  cld
  ret
-.globl __memcpy_erms 
-__memcpy_erms:
+.globl __memcpy_erms
+.set __memcpy_erms, __memmove_erms
+
 .globl __mempcpy_sse2_unaligned_erms
 __mempcpy_sse2_unaligned_erms:
  mov %rdi, %rax
@@ -471,11 +472,11 @@ __memmove_sse2_unaligned_erms:
  movups %xmm3, -16(%rdi, %rdx)
  ; ret
 
-.globl __memcpy_sse2_unaligned_erms 
-__memcpy_sse2_unaligned_erms:
+.globl __memcpy_sse2_unaligned_erms
+.set __memcpy_sse2_unaligned_erms, __memmove_sse2_unaligned_erms
 
-.globl __memcpy_sse2_unaligned 
-__memcpy_sse2_unaligned:
+.globl __memcpy_sse2_unaligned
+.set __memcpy_sse2_unaligned, __memmove_sse2_unaligned
 
-.globl __SI__memmove_sse2_unaligned_0 
+.globl __SI__memmove_sse2_unaligned_0
 __SI__memmove_sse2_unaligned_0:

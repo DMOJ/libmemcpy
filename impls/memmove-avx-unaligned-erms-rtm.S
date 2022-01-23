@@ -492,8 +492,8 @@ __memmove_avx_unaligned_erms_rtm:
  vmovdqu %ymm3, -32(%rdi, %rdx)
  jmp .Lreturn
 
-.globl __memcpy_avx_unaligned_erms_rtm 
-__memcpy_avx_unaligned_erms_rtm:
+.globl __memcpy_avx_unaligned_erms_rtm
+.set __memcpy_avx_unaligned_erms_rtm, __memmove_avx_unaligned_erms_rtm
 
-.globl __memcpy_avx_unaligned_rtm 
-__memcpy_avx_unaligned_rtm:
+.globl __memcpy_avx_unaligned_rtm
+.set __memcpy_avx_unaligned_rtm, __memmove_avx_unaligned_rtm

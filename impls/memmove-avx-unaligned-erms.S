@@ -492,8 +492,8 @@ __memmove_avx_unaligned_erms:
  vmovdqu %ymm3, -32(%rdi, %rdx)
  vzeroupper; ret
 
-.globl __memcpy_avx_unaligned_erms 
-__memcpy_avx_unaligned_erms:
+.globl __memcpy_avx_unaligned_erms
+.set __memcpy_avx_unaligned_erms, __memmove_avx_unaligned_erms
 
-.globl __memcpy_avx_unaligned 
-__memcpy_avx_unaligned:
+.globl __memcpy_avx_unaligned
+.set __memcpy_avx_unaligned, __memmove_avx_unaligned

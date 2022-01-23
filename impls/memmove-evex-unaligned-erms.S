@@ -491,8 +491,8 @@ __memmove_evex_unaligned_erms:
  vmovdqu64 %ymm19, -32(%rdi, %rdx)
  ; ret
 
-.globl __memcpy_evex_unaligned_erms 
-__memcpy_evex_unaligned_erms:
+.globl __memcpy_evex_unaligned_erms
+.set __memcpy_evex_unaligned_erms, __memmove_evex_unaligned_erms
 
-.globl __memcpy_evex_unaligned 
-__memcpy_evex_unaligned:
+.globl __memcpy_evex_unaligned
+.set __memcpy_evex_unaligned, __memmove_evex_unaligned
