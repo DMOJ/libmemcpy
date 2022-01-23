@@ -358,12 +358,14 @@ static void init_cpu_flags(void) {
 
     if (vendor == VENDOR_AMD)
         __x86_rep_movsb_stop_threshold = core;
-    else
+    else {
         __x86_rep_movsb_stop_threshold = __x86_shared_non_temporal_threshold;
 
-    // avoid short distance rep movsb on processors with fsrm
-    if (fsrm)
-        __x86_string_control |= X86_STRING_CONTROL_AVOID_SHORT_DISTANCE_REP_MOVSB;
+        // avoid short distance rep movsb on processors with fsrm
+        if (fsrm)
+          __x86_string_control |=
+              X86_STRING_CONTROL_AVOID_SHORT_DISTANCE_REP_MOVSB;
+    }
 
     memcpy_fast = select_memcpy();
     memmove_fast = select_memcpy();
