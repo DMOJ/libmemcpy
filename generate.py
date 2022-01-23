@@ -107,7 +107,7 @@ def update_cmake():
 def main():
     functions = get_functions()
 
-    with open(DIR / 'mingw-shim.s', 'w') as f:
+    with open(DIR / 'src' / 'mingw-shim.s', 'w') as f:
         for func in functions:
             print(generate_mingw_shim(func), file=f)
 
