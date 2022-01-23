@@ -12,6 +12,7 @@ def process_file(orig_asm):
 
     with open(orig_asm, 'r') as f:
         for line in f:
+            line = line.rstrip()
             if line.startswith('#'):
                 continue
             elif '.section' in line:
@@ -25,14 +26,14 @@ def process_file(orig_asm):
                         in_chk = True
                         continue
 
-                    lines.append(line.rstrip())
+                    lines.append(line)
                     lines.append(f'{match.group(1)}:')
                     continue
             elif '.cfi_endproc' in line:
                 continue
 
-            if not in_chk:
-                lines.append(line.rstrip())
+            if not in_chk and (line or (lines and lines[-1])):
+                lines.append(line)
     return '\n'.join(lines) + '\n'
 
 
