@@ -284,6 +284,10 @@ memcpy_t *mempcpy_fast;
 #include "select.h"
 #undef FUNCTION
 
+// From sysdeps/x86/sysdep.h
+/* Avoid short distance REP MOVSB */
+#define X86_STRING_CONTROL_AVOID_SHORT_DISTANCE_REP_MOVSB  (1 << 0)
+
 __attribute__((constructor))
 static void init_cpu_flags(void) {
     union {
@@ -359,7 +363,7 @@ static void init_cpu_flags(void) {
 
     // avoid short distance rep movsb on processors with fsrm
     if (fsrm)
-        __x86_string_control |= 1;
+        __x86_string_control |= X86_STRING_CONTROL_AVOID_SHORT_DISTANCE_REP_MOVSB;
 
     memcpy_fast = select_memcpy();
     memmove_fast = select_memcpy();
