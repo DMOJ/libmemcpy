@@ -119,17 +119,21 @@ memcpy_t mempcpy_sse2_unaligned_erms;
 memcpy_t mempcpy_ssse3;
 memcpy_t mempcpy_ssse3_back;
 
+extern memcpy_t *memcpy_fast;
+extern memcpy_t *memmove_fast;
+extern memcpy_t *mempcpy_fast;
+
 const char *libmemcpy_memcpy_name(memcpy_t *func);
 const char *libmemcpy_memmove_name(memcpy_t *func);
 const char *libmemcpy_mempcpy_name(memcpy_t *func);
 
+memcpy_t **libmemcpy_memcpy_available(int *count);
+memcpy_t **libmemcpy_memmove_available(int *count);
+memcpy_t **libmemcpy_mempcpy_available(int *count);
+
 // END GENERATED CODE
 
 void libmemcpy_report_cpu(void);
-
-extern memcpy_t *memcpy_fast;
-extern memcpy_t *memmove_fast;
-extern memcpy_t *mempcpy_fast;
 
 #ifdef __cplusplus
 }

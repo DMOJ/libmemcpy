@@ -8,9 +8,11 @@ from pathlib import Path
 DIR = Path(__file__).parent
 IMPL_GLOB = str(DIR / 'impls' / '*.s')
 HEADER = DIR / 'include' / 'libmemcpy.h'
+CPU = DIR / 'src' / 'cpu.c'
 CMAKE = DIR / 'CMakeLists.txt'
-reglobl = re.compile(r'\.globl\s+(\w+)')
+SIGNATURE = {'memmove': 'memcpy', 'mempcpy': 'memcpy'}
 
+reglobl = re.compile(r'\.globl\s+(\w+)')
 
 def get_functions():
     result = []
@@ -43,16 +45,19 @@ def generate_mingw_shim(func):
 '''
 
 
-def generate_name_lookup(functions):
-    signature = {'memmove': 'memcpy', 'mempcpy': 'memcpy'}
+def group_functions(functions):
     func_group = defaultdict(list)
     file_group = defaultdict(set)
 
     for func in functions:
         group = func.partition('_')[0]
         func_group[group].append(func)
-        file_group[signature.get(group, group)].add(group)
+        file_group[SIGNATURE.get(group, group)].add(group)
 
+    return func_group, file_group
+
+
+def generate_name_lookup(func_group, file_group):
     files = []
     prototypes = []
     for file, groups in file_group.items():
@@ -103,7 +108,49 @@ def get_ambles(f, comment, name):
     return preamble, postamble
 
 
-def update_header(functions, name_prototypes):
+def update_cpu(func_group):
+    with open(CPU) as f:
+        preamble, postamble = get_ambles(f, '//', 'GENERATED CODE')
+
+    prototypes = []
+    with open(CPU, 'w') as f:
+        for line in preamble:
+            f.write(line)
+
+        groups = sorted(func_group.keys())
+
+        for group in groups:
+            t = SIGNATURE.get(group, group)
+            print(f'{t}_t *{group}_fast;', file=f)
+        print(file=f)
+
+        for group in groups:
+            t = SIGNATURE.get(group, group)
+            size = len(func_group[group])
+            print(f'static {t}_t *{group}_available[{size + 1}];', file=f)
+        print(file=f)
+
+        for group in groups:
+            print(f'static int {group}_available_count;', file=f)
+
+        for group in groups:
+            print(file=f)
+            t = SIGNATURE.get(group, group)
+            proto = f'{t}_t **libmemcpy_{group}_available(int *count)'
+            prototypes.append(proto)
+            print(f'{proto} {{', file=f)
+            print( '    if (count)', file=f)
+            print(f'        *count = {group}_available_count;', file=f)
+            print(f'    return {group}_available;', file=f)
+            print( '}', file=f)
+
+        for line in postamble:
+            f.write(line)
+
+    return prototypes
+
+
+def update_header(functions, func_group, name_prototypes, available_prototypes):
     with open(HEADER) as f:
         preamble, postamble = get_ambles(f, '//', 'GENERATED CODE')
 
@@ -124,7 +171,15 @@ def update_header(functions, name_prototypes):
             print(f'memcpy_t {func};', file=f)
 
         print(file=f)
+        for group in sorted(func_group.keys()):
+            print(f'extern memcpy_t *{group}_fast;', file=f)
+
+        print(file=f)
         for proto in name_prototypes:
+            print(f'{proto};', file=f)
+
+        print(file=f)
+        for proto in available_prototypes:
             print(f'{proto};', file=f)
 
         print(file=f)
@@ -155,8 +210,10 @@ def main():
         for func in functions:
             print(generate_mingw_shim(func), file=f)
 
-    name_files, name_prototypes = generate_name_lookup(functions)
-    update_header(functions, name_prototypes)
+    func_group, file_group = group_functions(functions)
+    name_files, name_prototypes = generate_name_lookup(func_group, file_group)
+    available_prototypes = update_cpu(func_group)
+    update_header(functions, func_group, name_prototypes, available_prototypes)
     update_cmake(name_files)
 
 

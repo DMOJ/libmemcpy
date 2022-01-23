@@ -281,9 +281,37 @@ static void populate_amd_cache(void) {
     }
 }
 
+// BEGIN GENERATED CODE
 memcpy_t *memcpy_fast;
 memcpy_t *memmove_fast;
 memcpy_t *mempcpy_fast;
+
+static memcpy_t *memcpy_available[15];
+static memcpy_t *memmove_available[15];
+static memcpy_t *mempcpy_available[15];
+
+static int memcpy_available_count;
+static int memmove_available_count;
+static int mempcpy_available_count;
+
+memcpy_t **libmemcpy_memcpy_available(int *count) {
+    if (count)
+        *count = memcpy_available_count;
+    return memcpy_available;
+}
+
+memcpy_t **libmemcpy_memmove_available(int *count) {
+    if (count)
+        *count = memmove_available_count;
+    return memmove_available;
+}
+
+memcpy_t **libmemcpy_mempcpy_available(int *count) {
+    if (count)
+        *count = mempcpy_available_count;
+    return mempcpy_available;
+}
+// END GENERATED CODE
 
 #define CONCAT2(a, b) a ## b
 #define CONCAT(a, b) CONCAT2(a, b)
@@ -386,6 +414,10 @@ static void init_cpu_flags(void) {
     memcpy_fast = select_memcpy();
     memmove_fast = select_memmove();
     mempcpy_fast = select_mempcpy();
+
+    memcpy_available_count = available_memcpy(memcpy_available);
+    memmove_available_count = available_memmove(memmove_available);
+    mempcpy_available_count = available_mempcpy(mempcpy_available);
 }
 
 void libmemcpy_report_cpu(void) {
@@ -418,4 +450,8 @@ void libmemcpy_report_cpu(void) {
     printf("AVX: %d, AVX2: %d, ERMS: %d, FSRM: %d\n", avx, avx2, erms, fsrm);
     printf("RTM: %d, XMM: %d, YMM: %d\n", rtm, xmm, ymm);
     printf("memcpy selected: %s\n", libmemcpy_memcpy_name(memcpy_fast));
+    puts("memcpy available:");
+    for (memcpy_t **func = memcpy_available; *func; ++func) {
+        printf("  - %s\n", libmemcpy_memcpy_name(*func));
+    }
 }
