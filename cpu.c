@@ -257,30 +257,37 @@ static void populate_amd_cache(void) {
 }
 
 memcpy_t *memcpy_fast;
+memcpy_t *memmove_fast;
+memcpy_t *mempcpy_fast;
 
-static memcpy_t *select_memcpy(void) {
-    if (avx_fast_unaligned_load) {
-        if (rtm) {
-            if (erms)
-                return memcpy_avx_unaligned_erms_rtm;
-            return memcpy_avx_unaligned_rtm;
-        }
-        if (erms)
-            return memcpy_avx_unaligned_erms;
-        return memcpy_avx_unaligned;
+#define generate_select_memcpy(func) \
+    static memcpy_t *select_##func(void) { \
+        if (avx_fast_unaligned_load) { \
+            if (rtm) { \
+                if (erms) \
+                    return func##_avx_unaligned_erms_rtm; \
+                return func##_avx_unaligned_rtm; \
+            } \
+            if (erms) \
+                return func##_avx_unaligned_erms; \
+            return func##_avx_unaligned; \
+        } \
+ \
+        if (!ssse3 || fast_unaligned_copy) { \
+            if (erms) \
+                return func##_sse2_unaligned_erms; \
+            return func##_sse2_unaligned; \
+        } \
+ \
+        if (fast_copy_backward) \
+            return func##_ssse3_back; \
+ \
+        return func##_ssse3; \
     }
 
-    if (!ssse3 || fast_unaligned_copy) {
-        if (erms)
-            return memcpy_sse2_unaligned_erms;
-        return memcpy_sse2_unaligned;
-    }
-
-    if (fast_copy_backward)
-        return memcpy_ssse3_back;
-
-    return memcpy_ssse3;
-}
+generate_select_memcpy(memcpy)
+generate_select_memcpy(memmove)
+generate_select_memcpy(mempcpy)
 
 __attribute__((constructor))
 static void init_cpu_flags(void) {
@@ -349,6 +356,8 @@ static void init_cpu_flags(void) {
         __x86_string_control |= 1;
 
     memcpy_fast = select_memcpy();
+    memmove_fast = select_memcpy();
+    mempcpy_fast = select_memcpy();
 }
 
 void libmemcpy_report_cpu(void) {

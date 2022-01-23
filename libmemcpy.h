@@ -124,6 +124,8 @@ memcpy_t mempcpy_ssse3_back;
 void libmemcpy_report_cpu(void);
 
 extern memcpy_t *memcpy_fast;
+extern memcpy_t *memmove_fast;
+extern memcpy_t *mempcpy_fast;
 
 #ifdef __cplusplus
 }
