@@ -21,6 +21,8 @@
 #ifndef _LIBMEMCPY_H_
 #define _LIBMEMCPY_H_
 
+#include <stddef.h>
+
 #ifdef __cplusplus
 extern "C" {
 #endif
@@ -121,6 +123,7 @@ memcpy_t mempcpy_ssse3_back;
 
 void libmemcpy_report_cpu(void);
 
+extern memcpy_t *memcpy_fast;
 
 #ifdef __cplusplus
 }

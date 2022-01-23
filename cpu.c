@@ -18,6 +18,8 @@
  * USA
  */
 
+#include "libmemcpy.h"
+
 #include <cpuid.h>
 #include <inttypes.h>
 #include <stdbool.h>
@@ -70,18 +72,24 @@ static uint32_t model;
 static uint32_t stepping;
 
 static bool osxsave;
+static bool ssse3;
 static bool avx;
 static bool avx2;
+static bool erms;
 static bool fsrm;
+static bool rtm;
 static bool xmm;
 static bool ymm;
 static bool avx_fast_unaligned_load;
+static bool fast_unaligned_copy;
+static bool fast_copy_backward;
 
 #define BIT_XMM_STATE (1 << 1)
 #define BIT_YMM_STATE (2 << 1)
 
 static void populate_features(uint32_t ecx, uint32_t edx) {
     osxsave = ecx & (1 << 27);
+    ssse3 = ecx & (1 << 9);
     avx = ecx & (1 << 28);
 
     if (max_cpuid >= 7) {
@@ -89,7 +97,9 @@ static void populate_features(uint32_t ecx, uint32_t edx) {
         __cpuid(7, eax, ebx, ecx, edx);
 
         avx2 = ebx & (1 << 5);
+        erms = ebx & (1 << 9);
         fsrm = edx & (1 << 4);
+        rtm = (ebx & (1 << 11)) && !(edx & (1 << 11));
     }
 
     if (osxsave) {
@@ -101,6 +111,36 @@ static void populate_features(uint32_t ecx, uint32_t edx) {
     }
 
     avx_fast_unaligned_load = avx && avx2 && ymm;
+
+    if (vendor == VENDOR_INTEL && family == 0x06) {
+        switch (model) {
+            // Silvermont
+            case 0x37:
+            case 0x4a:
+            case 0x4d:
+            case 0x5d:
+            // Tremont
+            case 0x86:
+            case 0x96:
+            case 0x9c:
+            // Nehalem and Sandy Bridge
+            case 0x1a:
+            case 0x1e:
+            case 0x1f:
+            case 0x25:
+            case 0x2c:
+            case 0x2e:
+            case 0x2f:
+                fast_unaligned_copy = true;
+                break;
+        }
+    }
+
+    if (vendor == VENDOR_AMD && family == 0x15) {
+        // Excavator
+        fast_copy_backward = true;
+        avx_fast_unaligned_load = false;
+    }
 }
 
 static int64_t l1i_size = -1;
@@ -216,6 +256,32 @@ static void populate_amd_cache(void) {
     }
 }
 
+memcpy_t *memcpy_fast;
+
+static memcpy_t *select_memcpy(void) {
+    if (avx_fast_unaligned_load) {
+        if (rtm) {
+            if (erms)
+                return memcpy_avx_unaligned_erms_rtm;
+            return memcpy_avx_unaligned_rtm;
+        }
+        if (erms)
+            return memcpy_avx_unaligned_erms;
+        return memcpy_avx_unaligned;
+    }
+
+    if (!ssse3 || fast_unaligned_copy) {
+        if (erms)
+            return memcpy_sse2_unaligned_erms;
+        return memcpy_sse2_unaligned;
+    }
+
+    if (fast_copy_backward)
+        return memcpy_ssse3_back;
+
+    return memcpy_ssse3;
+}
+
 __attribute__((constructor))
 static void init_cpu_flags(void) {
     union {
@@ -281,6 +347,8 @@ static void init_cpu_flags(void) {
     // avoid short distance rep movsb on processors with fsrm
     if (fsrm)
         __x86_string_control |= 1;
+
+    memcpy_fast = select_memcpy();
 }
 
 void libmemcpy_report_cpu(void) {
