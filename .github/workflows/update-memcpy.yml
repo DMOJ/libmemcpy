@@ -3,8 +3,13 @@ on:
   push:
     branches:
       - master
+    paths:
+      - generate.py
+      - fetch_impls.sh
+  schedule:
+    - cron: '0 0 * * 1'
 jobs:
-  build:
+  update:
     if: github.repository == 'DMOJ/libmemcpy'
     runs-on: ubuntu-latest
     steps:
