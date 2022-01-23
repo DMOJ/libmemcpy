@@ -11,11 +11,15 @@ HEADER = DIR / 'include' / 'libmemcpy.h'
 CPU = DIR / 'src' / 'cpu.c'
 CMAKE = DIR / 'CMakeLists.txt'
 SIGNATURE = {'memmove': 'memcpy', 'mempcpy': 'memcpy'}
+WINDOWS_BAD_XMM = frozenset(range(6, 16))
 
 reglobl = re.compile(r'\.globl\s+(\w+)')
+rexmm = re.compile(r'%[xyz]mm(\d+)')
 
 def get_functions():
-    result = []
+    functions = []
+    xmm_usage = defaultdict(set)
+    function_xmm = {}
 
     for file in glob(IMPL_GLOB):
         with open(file) as f:
@@ -24,13 +28,23 @@ def get_functions():
                 if match:
                     name = match.group(1)
                     if name.startswith('__mem'):
-                        result.append(name.lstrip('_'))
-    result.sort()
-    return result
+                        name = name.lstrip('_')
+                        functions.append(name)
+                        function_xmm[name] = xmm_usage[file]
+
+                match = rexmm.search(line)
+                if match:
+                    xmm_usage[file].add(int(match.group(1)))
+
+    functions.sort()
+    return functions, function_xmm
 
 
-def generate_mingw_shim(func):
-    return f'''\
+def generate_mingw_shim(func, xmm_usage):
+    bad_xmm = sorted(WINDOWS_BAD_XMM & xmm_usage)
+    spill_zone = len(bad_xmm) * 16
+
+    parts = [f'''\
 	.global	{func}
 {func}:
 	pushq	%rdi
@@ -38,11 +52,29 @@ def generate_mingw_shim(func):
 	movq	%rcx, %rdi
 	movq	%rdx, %rsi
 	movq	%r8,  %rdx
-	call	__{func}
+''']
+
+    if spill_zone:
+        # Stack is misaligned by 8 on entry, pushing rdi and rsi keeps this
+        # misalignment. We add 8 bytes so that stack is realigned to 16 bytes.
+        # Then we can use movdqa instead movdqu.
+        parts.append(f'\tsubq\t${spill_zone + 8}, %rsp\n')
+        for i, xmm in enumerate(bad_xmm):
+            parts.append(f'\tmovdqa\t%xmm{xmm}, {i * 16}(%rsp)\n')
+
+    parts.append(f'\tcall\t__{func}\n')
+
+    if spill_zone:
+        for i, xmm in enumerate(bad_xmm):
+            parts.append(f'\tmovdqa\t{i * 16}(%rsp), %xmm{xmm}\n')
+        parts.append(f'\taddq\t${spill_zone + 8}, %rsp\n')
+
+    parts.append(f'''\
 	popq	%rsi
 	popq	%rdi
 	ret
-'''
+''')
+    return ''.join(parts)
 
 
 def group_functions(functions):
@@ -204,11 +236,11 @@ def update_cmake(name_files):
 
 
 def main():
-    functions = get_functions()
+    functions, xmm_usage = get_functions()
 
     with open(DIR / 'src' / 'mingw-shim.s', 'w') as f:
         for func in functions:
-            print(generate_mingw_shim(func), file=f)
+            print(generate_mingw_shim(func, xmm_usage[func]), file=f)
 
     func_group, file_group = group_functions(functions)
     name_files, name_prototypes = generate_name_lookup(func_group, file_group)

@@ -5,7 +5,29 @@ memcpy_avx512_no_vzeroupper:
 	movq	%rcx, %rdi
 	movq	%rdx, %rsi
 	movq	%r8,  %rdx
+	subq	$168, %rsp
+	movdqa	%xmm6, 0(%rsp)
+	movdqa	%xmm7, 16(%rsp)
+	movdqa	%xmm8, 32(%rsp)
+	movdqa	%xmm9, 48(%rsp)
+	movdqa	%xmm10, 64(%rsp)
+	movdqa	%xmm11, 80(%rsp)
+	movdqa	%xmm12, 96(%rsp)
+	movdqa	%xmm13, 112(%rsp)
+	movdqa	%xmm14, 128(%rsp)
+	movdqa	%xmm15, 144(%rsp)
 	call	__memcpy_avx512_no_vzeroupper
+	movdqa	0(%rsp), %xmm6
+	movdqa	16(%rsp), %xmm7
+	movdqa	32(%rsp), %xmm8
+	movdqa	48(%rsp), %xmm9
+	movdqa	64(%rsp), %xmm10
+	movdqa	80(%rsp), %xmm11
+	movdqa	96(%rsp), %xmm12
+	movdqa	112(%rsp), %xmm13
+	movdqa	128(%rsp), %xmm14
+	movdqa	144(%rsp), %xmm15
+	addq	$168, %rsp
 	popq	%rsi
 	popq	%rdi
 	ret
@@ -41,7 +63,17 @@ memcpy_avx_unaligned:
 	movq	%rcx, %rdi
 	movq	%rdx, %rsi
 	movq	%r8,  %rdx
+	subq	$72, %rsp
+	movdqa	%xmm6, 0(%rsp)
+	movdqa	%xmm7, 16(%rsp)
+	movdqa	%xmm8, 32(%rsp)
+	movdqa	%xmm12, 48(%rsp)
 	call	__memcpy_avx_unaligned
+	movdqa	0(%rsp), %xmm6
+	movdqa	16(%rsp), %xmm7
+	movdqa	32(%rsp), %xmm8
+	movdqa	48(%rsp), %xmm12
+	addq	$72, %rsp
 	popq	%rsi
 	popq	%rdi
 	ret
@@ -53,7 +85,17 @@ memcpy_avx_unaligned_erms:
 	movq	%rcx, %rdi
 	movq	%rdx, %rsi
 	movq	%r8,  %rdx
+	subq	$72, %rsp
+	movdqa	%xmm6, 0(%rsp)
+	movdqa	%xmm7, 16(%rsp)
+	movdqa	%xmm8, 32(%rsp)
+	movdqa	%xmm12, 48(%rsp)
 	call	__memcpy_avx_unaligned_erms
+	movdqa	0(%rsp), %xmm6
+	movdqa	16(%rsp), %xmm7
+	movdqa	32(%rsp), %xmm8
+	movdqa	48(%rsp), %xmm12
+	addq	$72, %rsp
 	popq	%rsi
 	popq	%rdi
 	ret
@@ -65,7 +107,17 @@ memcpy_avx_unaligned_erms_rtm:
 	movq	%rcx, %rdi
 	movq	%rdx, %rsi
 	movq	%r8,  %rdx
+	subq	$72, %rsp
+	movdqa	%xmm6, 0(%rsp)
+	movdqa	%xmm7, 16(%rsp)
+	movdqa	%xmm8, 32(%rsp)
+	movdqa	%xmm12, 48(%rsp)
 	call	__memcpy_avx_unaligned_erms_rtm
+	movdqa	0(%rsp), %xmm6
+	movdqa	16(%rsp), %xmm7
+	movdqa	32(%rsp), %xmm8
+	movdqa	48(%rsp), %xmm12
+	addq	$72, %rsp
 	popq	%rsi
 	popq	%rdi
 	ret
@@ -77,7 +129,17 @@ memcpy_avx_unaligned_rtm:
 	movq	%rcx, %rdi
 	movq	%rdx, %rsi
 	movq	%r8,  %rdx
+	subq	$72, %rsp
+	movdqa	%xmm6, 0(%rsp)
+	movdqa	%xmm7, 16(%rsp)
+	movdqa	%xmm8, 32(%rsp)
+	movdqa	%xmm12, 48(%rsp)
 	call	__memcpy_avx_unaligned_rtm
+	movdqa	0(%rsp), %xmm6
+	movdqa	16(%rsp), %xmm7
+	movdqa	32(%rsp), %xmm8
+	movdqa	48(%rsp), %xmm12
+	addq	$72, %rsp
 	popq	%rsi
 	popq	%rdi
 	ret
@@ -89,7 +151,17 @@ memcpy_erms:
 	movq	%rcx, %rdi
 	movq	%rdx, %rsi
 	movq	%r8,  %rdx
+	subq	$72, %rsp
+	movdqa	%xmm6, 0(%rsp)
+	movdqa	%xmm7, 16(%rsp)
+	movdqa	%xmm8, 32(%rsp)
+	movdqa	%xmm12, 48(%rsp)
 	call	__memcpy_erms
+	movdqa	0(%rsp), %xmm6
+	movdqa	16(%rsp), %xmm7
+	movdqa	32(%rsp), %xmm8
+	movdqa	48(%rsp), %xmm12
+	addq	$72, %rsp
 	popq	%rsi
 	popq	%rdi
 	ret
@@ -125,7 +197,17 @@ memcpy_sse2_unaligned:
 	movq	%rcx, %rdi
 	movq	%rdx, %rsi
 	movq	%r8,  %rdx
+	subq	$72, %rsp
+	movdqa	%xmm6, 0(%rsp)
+	movdqa	%xmm7, 16(%rsp)
+	movdqa	%xmm8, 32(%rsp)
+	movdqa	%xmm12, 48(%rsp)
 	call	__memcpy_sse2_unaligned
+	movdqa	0(%rsp), %xmm6
+	movdqa	16(%rsp), %xmm7
+	movdqa	32(%rsp), %xmm8
+	movdqa	48(%rsp), %xmm12
+	addq	$72, %rsp
 	popq	%rsi
 	popq	%rdi
 	ret
@@ -137,7 +219,17 @@ memcpy_sse2_unaligned_erms:
 	movq	%rcx, %rdi
 	movq	%rdx, %rsi
 	movq	%r8,  %rdx
+	subq	$72, %rsp
+	movdqa	%xmm6, 0(%rsp)
+	movdqa	%xmm7, 16(%rsp)
+	movdqa	%xmm8, 32(%rsp)
+	movdqa	%xmm12, 48(%rsp)
 	call	__memcpy_sse2_unaligned_erms
+	movdqa	0(%rsp), %xmm6
+	movdqa	16(%rsp), %xmm7
+	movdqa	32(%rsp), %xmm8
+	movdqa	48(%rsp), %xmm12
+	addq	$72, %rsp
 	popq	%rsi
 	popq	%rdi
 	ret
@@ -149,7 +241,13 @@ memcpy_ssse3:
 	movq	%rcx, %rdi
 	movq	%rdx, %rsi
 	movq	%r8,  %rdx
+	subq	$40, %rsp
+	movdqa	%xmm6, 0(%rsp)
+	movdqa	%xmm7, 16(%rsp)
 	call	__memcpy_ssse3
+	movdqa	0(%rsp), %xmm6
+	movdqa	16(%rsp), %xmm7
+	addq	$40, %rsp
 	popq	%rsi
 	popq	%rdi
 	ret
@@ -161,7 +259,17 @@ memcpy_ssse3_back:
 	movq	%rcx, %rdi
 	movq	%rdx, %rsi
 	movq	%r8,  %rdx
+	subq	$72, %rsp
+	movdqa	%xmm6, 0(%rsp)
+	movdqa	%xmm7, 16(%rsp)
+	movdqa	%xmm8, 32(%rsp)
+	movdqa	%xmm9, 48(%rsp)
 	call	__memcpy_ssse3_back
+	movdqa	0(%rsp), %xmm6
+	movdqa	16(%rsp), %xmm7
+	movdqa	32(%rsp), %xmm8
+	movdqa	48(%rsp), %xmm9
+	addq	$72, %rsp
 	popq	%rsi
 	popq	%rdi
 	ret
@@ -173,7 +281,29 @@ memmove_avx512_no_vzeroupper:
 	movq	%rcx, %rdi
 	movq	%rdx, %rsi
 	movq	%r8,  %rdx
+	subq	$168, %rsp
+	movdqa	%xmm6, 0(%rsp)
+	movdqa	%xmm7, 16(%rsp)
+	movdqa	%xmm8, 32(%rsp)
+	movdqa	%xmm9, 48(%rsp)
+	movdqa	%xmm10, 64(%rsp)
+	movdqa	%xmm11, 80(%rsp)
+	movdqa	%xmm12, 96(%rsp)
+	movdqa	%xmm13, 112(%rsp)
+	movdqa	%xmm14, 128(%rsp)
+	movdqa	%xmm15, 144(%rsp)
 	call	__memmove_avx512_no_vzeroupper
+	movdqa	0(%rsp), %xmm6
+	movdqa	16(%rsp), %xmm7
+	movdqa	32(%rsp), %xmm8
+	movdqa	48(%rsp), %xmm9
+	movdqa	64(%rsp), %xmm10
+	movdqa	80(%rsp), %xmm11
+	movdqa	96(%rsp), %xmm12
+	movdqa	112(%rsp), %xmm13
+	movdqa	128(%rsp), %xmm14
+	movdqa	144(%rsp), %xmm15
+	addq	$168, %rsp
 	popq	%rsi
 	popq	%rdi
 	ret
@@ -209,7 +339,17 @@ memmove_avx_unaligned:
 	movq	%rcx, %rdi
 	movq	%rdx, %rsi
 	movq	%r8,  %rdx
+	subq	$72, %rsp
+	movdqa	%xmm6, 0(%rsp)
+	movdqa	%xmm7, 16(%rsp)
+	movdqa	%xmm8, 32(%rsp)
+	movdqa	%xmm12, 48(%rsp)
 	call	__memmove_avx_unaligned
+	movdqa	0(%rsp), %xmm6
+	movdqa	16(%rsp), %xmm7
+	movdqa	32(%rsp), %xmm8
+	movdqa	48(%rsp), %xmm12
+	addq	$72, %rsp
 	popq	%rsi
 	popq	%rdi
 	ret
@@ -221,7 +361,17 @@ memmove_avx_unaligned_erms:
 	movq	%rcx, %rdi
 	movq	%rdx, %rsi
 	movq	%r8,  %rdx
+	subq	$72, %rsp
+	movdqa	%xmm6, 0(%rsp)
+	movdqa	%xmm7, 16(%rsp)
+	movdqa	%xmm8, 32(%rsp)
+	movdqa	%xmm12, 48(%rsp)
 	call	__memmove_avx_unaligned_erms
+	movdqa	0(%rsp), %xmm6
+	movdqa	16(%rsp), %xmm7
+	movdqa	32(%rsp), %xmm8
+	movdqa	48(%rsp), %xmm12
+	addq	$72, %rsp
 	popq	%rsi
 	popq	%rdi
 	ret
@@ -233,7 +383,17 @@ memmove_avx_unaligned_erms_rtm:
 	movq	%rcx, %rdi
 	movq	%rdx, %rsi
 	movq	%r8,  %rdx
+	subq	$72, %rsp
+	movdqa	%xmm6, 0(%rsp)
+	movdqa	%xmm7, 16(%rsp)
+	movdqa	%xmm8, 32(%rsp)
+	movdqa	%xmm12, 48(%rsp)
 	call	__memmove_avx_unaligned_erms_rtm
+	movdqa	0(%rsp), %xmm6
+	movdqa	16(%rsp), %xmm7
+	movdqa	32(%rsp), %xmm8
+	movdqa	48(%rsp), %xmm12
+	addq	$72, %rsp
 	popq	%rsi
 	popq	%rdi
 	ret
@@ -245,7 +405,17 @@ memmove_avx_unaligned_rtm:
 	movq	%rcx, %rdi
 	movq	%rdx, %rsi
 	movq	%r8,  %rdx
+	subq	$72, %rsp
+	movdqa	%xmm6, 0(%rsp)
+	movdqa	%xmm7, 16(%rsp)
+	movdqa	%xmm8, 32(%rsp)
+	movdqa	%xmm12, 48(%rsp)
 	call	__memmove_avx_unaligned_rtm
+	movdqa	0(%rsp), %xmm6
+	movdqa	16(%rsp), %xmm7
+	movdqa	32(%rsp), %xmm8
+	movdqa	48(%rsp), %xmm12
+	addq	$72, %rsp
 	popq	%rsi
 	popq	%rdi
 	ret
@@ -257,7 +427,17 @@ memmove_erms:
 	movq	%rcx, %rdi
 	movq	%rdx, %rsi
 	movq	%r8,  %rdx
+	subq	$72, %rsp
+	movdqa	%xmm6, 0(%rsp)
+	movdqa	%xmm7, 16(%rsp)
+	movdqa	%xmm8, 32(%rsp)
+	movdqa	%xmm12, 48(%rsp)
 	call	__memmove_erms
+	movdqa	0(%rsp), %xmm6
+	movdqa	16(%rsp), %xmm7
+	movdqa	32(%rsp), %xmm8
+	movdqa	48(%rsp), %xmm12
+	addq	$72, %rsp
 	popq	%rsi
 	popq	%rdi
 	ret
@@ -293,7 +473,17 @@ memmove_sse2_unaligned:
 	movq	%rcx, %rdi
 	movq	%rdx, %rsi
 	movq	%r8,  %rdx
+	subq	$72, %rsp
+	movdqa	%xmm6, 0(%rsp)
+	movdqa	%xmm7, 16(%rsp)
+	movdqa	%xmm8, 32(%rsp)
+	movdqa	%xmm12, 48(%rsp)
 	call	__memmove_sse2_unaligned
+	movdqa	0(%rsp), %xmm6
+	movdqa	16(%rsp), %xmm7
+	movdqa	32(%rsp), %xmm8
+	movdqa	48(%rsp), %xmm12
+	addq	$72, %rsp
 	popq	%rsi
 	popq	%rdi
 	ret
@@ -305,7 +495,17 @@ memmove_sse2_unaligned_erms:
 	movq	%rcx, %rdi
 	movq	%rdx, %rsi
 	movq	%r8,  %rdx
+	subq	$72, %rsp
+	movdqa	%xmm6, 0(%rsp)
+	movdqa	%xmm7, 16(%rsp)
+	movdqa	%xmm8, 32(%rsp)
+	movdqa	%xmm12, 48(%rsp)
 	call	__memmove_sse2_unaligned_erms
+	movdqa	0(%rsp), %xmm6
+	movdqa	16(%rsp), %xmm7
+	movdqa	32(%rsp), %xmm8
+	movdqa	48(%rsp), %xmm12
+	addq	$72, %rsp
 	popq	%rsi
 	popq	%rdi
 	ret
@@ -317,7 +517,13 @@ memmove_ssse3:
 	movq	%rcx, %rdi
 	movq	%rdx, %rsi
 	movq	%r8,  %rdx
+	subq	$40, %rsp
+	movdqa	%xmm6, 0(%rsp)
+	movdqa	%xmm7, 16(%rsp)
 	call	__memmove_ssse3
+	movdqa	0(%rsp), %xmm6
+	movdqa	16(%rsp), %xmm7
+	addq	$40, %rsp
 	popq	%rsi
 	popq	%rdi
 	ret
@@ -329,7 +535,17 @@ memmove_ssse3_back:
 	movq	%rcx, %rdi
 	movq	%rdx, %rsi
 	movq	%r8,  %rdx
+	subq	$72, %rsp
+	movdqa	%xmm6, 0(%rsp)
+	movdqa	%xmm7, 16(%rsp)
+	movdqa	%xmm8, 32(%rsp)
+	movdqa	%xmm9, 48(%rsp)
 	call	__memmove_ssse3_back
+	movdqa	0(%rsp), %xmm6
+	movdqa	16(%rsp), %xmm7
+	movdqa	32(%rsp), %xmm8
+	movdqa	48(%rsp), %xmm9
+	addq	$72, %rsp
 	popq	%rsi
 	popq	%rdi
 	ret
@@ -341,7 +557,29 @@ mempcpy_avx512_no_vzeroupper:
 	movq	%rcx, %rdi
 	movq	%rdx, %rsi
 	movq	%r8,  %rdx
+	subq	$168, %rsp
+	movdqa	%xmm6, 0(%rsp)
+	movdqa	%xmm7, 16(%rsp)
+	movdqa	%xmm8, 32(%rsp)
+	movdqa	%xmm9, 48(%rsp)
+	movdqa	%xmm10, 64(%rsp)
+	movdqa	%xmm11, 80(%rsp)
+	movdqa	%xmm12, 96(%rsp)
+	movdqa	%xmm13, 112(%rsp)
+	movdqa	%xmm14, 128(%rsp)
+	movdqa	%xmm15, 144(%rsp)
 	call	__mempcpy_avx512_no_vzeroupper
+	movdqa	0(%rsp), %xmm6
+	movdqa	16(%rsp), %xmm7
+	movdqa	32(%rsp), %xmm8
+	movdqa	48(%rsp), %xmm9
+	movdqa	64(%rsp), %xmm10
+	movdqa	80(%rsp), %xmm11
+	movdqa	96(%rsp), %xmm12
+	movdqa	112(%rsp), %xmm13
+	movdqa	128(%rsp), %xmm14
+	movdqa	144(%rsp), %xmm15
+	addq	$168, %rsp
 	popq	%rsi
 	popq	%rdi
 	ret
@@ -377,7 +615,17 @@ mempcpy_avx_unaligned:
 	movq	%rcx, %rdi
 	movq	%rdx, %rsi
 	movq	%r8,  %rdx
+	subq	$72, %rsp
+	movdqa	%xmm6, 0(%rsp)
+	movdqa	%xmm7, 16(%rsp)
+	movdqa	%xmm8, 32(%rsp)
+	movdqa	%xmm12, 48(%rsp)
 	call	__mempcpy_avx_unaligned
+	movdqa	0(%rsp), %xmm6
+	movdqa	16(%rsp), %xmm7
+	movdqa	32(%rsp), %xmm8
+	movdqa	48(%rsp), %xmm12
+	addq	$72, %rsp
 	popq	%rsi
 	popq	%rdi
 	ret
@@ -389,7 +637,17 @@ mempcpy_avx_unaligned_erms:
 	movq	%rcx, %rdi
 	movq	%rdx, %rsi
 	movq	%r8,  %rdx
+	subq	$72, %rsp
+	movdqa	%xmm6, 0(%rsp)
+	movdqa	%xmm7, 16(%rsp)
+	movdqa	%xmm8, 32(%rsp)
+	movdqa	%xmm12, 48(%rsp)
 	call	__mempcpy_avx_unaligned_erms
+	movdqa	0(%rsp), %xmm6
+	movdqa	16(%rsp), %xmm7
+	movdqa	32(%rsp), %xmm8
+	movdqa	48(%rsp), %xmm12
+	addq	$72, %rsp
 	popq	%rsi
 	popq	%rdi
 	ret
@@ -401,7 +659,17 @@ mempcpy_avx_unaligned_erms_rtm:
 	movq	%rcx, %rdi
 	movq	%rdx, %rsi
 	movq	%r8,  %rdx
+	subq	$72, %rsp
+	movdqa	%xmm6, 0(%rsp)
+	movdqa	%xmm7, 16(%rsp)
+	movdqa	%xmm8, 32(%rsp)
+	movdqa	%xmm12, 48(%rsp)
 	call	__mempcpy_avx_unaligned_erms_rtm
+	movdqa	0(%rsp), %xmm6
+	movdqa	16(%rsp), %xmm7
+	movdqa	32(%rsp), %xmm8
+	movdqa	48(%rsp), %xmm12
+	addq	$72, %rsp
 	popq	%rsi
 	popq	%rdi
 	ret
@@ -413,7 +681,17 @@ mempcpy_avx_unaligned_rtm:
 	movq	%rcx, %rdi
 	movq	%rdx, %rsi
 	movq	%r8,  %rdx
+	subq	$72, %rsp
+	movdqa	%xmm6, 0(%rsp)
+	movdqa	%xmm7, 16(%rsp)
+	movdqa	%xmm8, 32(%rsp)
+	movdqa	%xmm12, 48(%rsp)
 	call	__mempcpy_avx_unaligned_rtm
+	movdqa	0(%rsp), %xmm6
+	movdqa	16(%rsp), %xmm7
+	movdqa	32(%rsp), %xmm8
+	movdqa	48(%rsp), %xmm12
+	addq	$72, %rsp
 	popq	%rsi
 	popq	%rdi
 	ret
@@ -425,7 +703,17 @@ mempcpy_erms:
 	movq	%rcx, %rdi
 	movq	%rdx, %rsi
 	movq	%r8,  %rdx
+	subq	$72, %rsp
+	movdqa	%xmm6, 0(%rsp)
+	movdqa	%xmm7, 16(%rsp)
+	movdqa	%xmm8, 32(%rsp)
+	movdqa	%xmm12, 48(%rsp)
 	call	__mempcpy_erms
+	movdqa	0(%rsp), %xmm6
+	movdqa	16(%rsp), %xmm7
+	movdqa	32(%rsp), %xmm8
+	movdqa	48(%rsp), %xmm12
+	addq	$72, %rsp
 	popq	%rsi
 	popq	%rdi
 	ret
@@ -461,7 +749,17 @@ mempcpy_sse2_unaligned:
 	movq	%rcx, %rdi
 	movq	%rdx, %rsi
 	movq	%r8,  %rdx
+	subq	$72, %rsp
+	movdqa	%xmm6, 0(%rsp)
+	movdqa	%xmm7, 16(%rsp)
+	movdqa	%xmm8, 32(%rsp)
+	movdqa	%xmm12, 48(%rsp)
 	call	__mempcpy_sse2_unaligned
+	movdqa	0(%rsp), %xmm6
+	movdqa	16(%rsp), %xmm7
+	movdqa	32(%rsp), %xmm8
+	movdqa	48(%rsp), %xmm12
+	addq	$72, %rsp
 	popq	%rsi
 	popq	%rdi
 	ret
@@ -473,7 +771,17 @@ mempcpy_sse2_unaligned_erms:
 	movq	%rcx, %rdi
 	movq	%rdx, %rsi
 	movq	%r8,  %rdx
+	subq	$72, %rsp
+	movdqa	%xmm6, 0(%rsp)
+	movdqa	%xmm7, 16(%rsp)
+	movdqa	%xmm8, 32(%rsp)
+	movdqa	%xmm12, 48(%rsp)
 	call	__mempcpy_sse2_unaligned_erms
+	movdqa	0(%rsp), %xmm6
+	movdqa	16(%rsp), %xmm7
+	movdqa	32(%rsp), %xmm8
+	movdqa	48(%rsp), %xmm12
+	addq	$72, %rsp
 	popq	%rsi
 	popq	%rdi
 	ret
@@ -485,7 +793,13 @@ mempcpy_ssse3:
 	movq	%rcx, %rdi
 	movq	%rdx, %rsi
 	movq	%r8,  %rdx
+	subq	$40, %rsp
+	movdqa	%xmm6, 0(%rsp)
+	movdqa	%xmm7, 16(%rsp)
 	call	__mempcpy_ssse3
+	movdqa	0(%rsp), %xmm6
+	movdqa	16(%rsp), %xmm7
+	addq	$40, %rsp
 	popq	%rsi
 	popq	%rdi
 	ret
@@ -497,7 +811,17 @@ mempcpy_ssse3_back:
 	movq	%rcx, %rdi
 	movq	%rdx, %rsi
 	movq	%r8,  %rdx
+	subq	$72, %rsp
+	movdqa	%xmm6, 0(%rsp)
+	movdqa	%xmm7, 16(%rsp)
+	movdqa	%xmm8, 32(%rsp)
+	movdqa	%xmm9, 48(%rsp)
 	call	__mempcpy_ssse3_back
+	movdqa	0(%rsp), %xmm6
+	movdqa	16(%rsp), %xmm7
+	movdqa	32(%rsp), %xmm8
+	movdqa	48(%rsp), %xmm9
+	addq	$72, %rsp
 	popq	%rsi
 	popq	%rdi
 	ret
