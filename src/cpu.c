@@ -54,7 +54,7 @@ int __x86_string_control;
 
 union {
     uint32_t words[12];
-    char *name[48];
+    char name[48];
 } brand;
 
 enum vendor {
@@ -105,7 +105,7 @@ static void populate_features(uint32_t ecx, uint32_t edx) {
         uint32_t xcrlow, xcrhigh;
         __asm__("xgetbv" : "=a"(xcrlow), "=d"(xcrhigh) : "c"(0));
         xmm = xcrlow & BIT_XMM_STATE;
-        ymm = xcrlow & (BIT_XMM_STATE | BIT_YMM_STATE) ==
+        ymm = (xcrlow & (BIT_XMM_STATE | BIT_YMM_STATE)) ==
             (BIT_XMM_STATE | BIT_YMM_STATE);
     }
 
@@ -384,8 +384,8 @@ static void init_cpu_flags(void) {
     }
 
     memcpy_fast = select_memcpy();
-    memmove_fast = select_memcpy();
-    mempcpy_fast = select_memcpy();
+    memmove_fast = select_memmove();
+    mempcpy_fast = select_mempcpy();
 }
 
 void libmemcpy_report_cpu(void) {

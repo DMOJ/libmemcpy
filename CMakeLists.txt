@@ -2,6 +2,11 @@ cmake_minimum_required(VERSION 3.0)
 project(libmemcpy LANGUAGES C ASM-ATT)
 set(CMAKE_C_STANDARD 99)
 
+add_compile_options(
+    "$<$<COMPILE_LANGUAGE:C>:-Wall>"
+    "$<$<COMPILE_LANGUAGE:C>:-Werror>"
+)
+
 if (WIN32)
     set(LIBMEMCPY_PLATFORM_FILES src/mingw-shim.s)
 else()
