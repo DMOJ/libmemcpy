@@ -94,7 +94,7 @@ static void populate_features(uint32_t ecx, uint32_t edx) {
 
     if (max_cpuid >= 7) {
         uint32_t eax, ebx;
-        __cpuid(7, eax, ebx, ecx, edx);
+        __cpuid_count(7, 0, eax, ebx, ecx, edx);
 
         avx2 = ebx & (1 << 5);
         erms = ebx & (1 << 9);
@@ -386,5 +386,7 @@ void libmemcpy_report_cpu(void) {
            PRId64 "-way associative\n", l3_size, l3_line, l3_assoc);
     printf("By usage: %" PRId64 " bytes data, %" PRId64 " bytes core, %" PRId64
            " bytes shared\n", data, core, shared);
+    printf("AVX: %d, AVX2: %d, ERMS: %d, FSRM: %d\n", avx, avx2, erms, fsrm);
+    printf("RTM: %d, XMM: %d, YMM: %d\n", rtm, xmm, ymm);
     printf("memcpy selected: %s\n", select_memcpy_name());
 }
