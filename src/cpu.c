@@ -113,16 +113,30 @@ static void populate_features(uint32_t ecx, uint32_t edx) {
 
     if (vendor == VENDOR_INTEL && family == 0x06) {
         switch (model) {
-            // Silvermont
+            case 0x1c:
+            case 0x26:
+                // Atom
+                break;
+            case 0x57:
+                // Knights Landing. Enable Silvermont optimizations.
+            case 0x7a:
+                // Unaligned load versions are faster than SSSE3 on Goldmont Plus.
+            case 0x5c:
+            case 0x5f:
+                // Unaligned load versions are faster than SSSE3 on Goldmont.
+            case 0x4c:
+            case 0x5a:
+            case 0x75:
+                // Airmont is a die shrink of Silvermont.
             case 0x37:
             case 0x4a:
             case 0x4d:
             case 0x5d:
-            // Tremont
+                // Silvermont
             case 0x86:
             case 0x96:
             case 0x9c:
-            // Nehalem and Sandy Bridge
+                // Tremont
             case 0x1a:
             case 0x1e:
             case 0x1f:
@@ -130,6 +144,7 @@ static void populate_features(uint32_t ecx, uint32_t edx) {
             case 0x2c:
             case 0x2e:
             case 0x2f:
+                // Nehalem and Sandy Bridge
                 fast_unaligned_copy = true;
                 break;
         }
