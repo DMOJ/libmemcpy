@@ -31,9 +31,10 @@ for impl in ../sysdeps/x86_64/multiarch/mem{cpy,move}*.S; do
 
   gcc "${impl}" \
     -c \
+    -I./ \
+    -I../ \
     -I../include \
     -I./string \
-    -I./ \
     -I../sysdeps/unix/sysv/linux/x86_64/64 \
     -I../sysdeps/unix/sysv/linux/x86_64 \
     -I../sysdeps/unix/sysv/linux/x86/include \
@@ -67,9 +68,7 @@ for impl in ../sysdeps/x86_64/multiarch/mem{cpy,move}*.S; do
     -I../sysdeps/wordsize-64 \
     -I../sysdeps/ieee754 \
     -I../sysdeps/generic \
-    -I.. \
     -I../libio \
-    -I. \
     -D_LIBC_REENTRANT \
     -include ./libc-modules.h \
     -DMODULE_NAME=libc \
