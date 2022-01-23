@@ -1,0 +1,23 @@
+name: build
+on: [push, pull_request]
+jobs:
+  linux:
+    runs-on: ubuntu-20.04
+    strategy:
+      fail-fast: false
+      matrix:
+        cc: [gcc, clang]
+        build_type: [Release, Debug]
+    steps:
+    - uses: actions/checkout@v2
+    - name: Configure libmemcpy
+      env:
+        CC: /usr/bin/${{ matrix.cc }}
+      run: |
+        mkdir build
+        cd build
+        cmake -DCMAKE_BUILD_TYPE=${{ matrix.build_type }} ..
+    - name: Build libmemcpy
+      run: |
+        cd build
+        make -j$(nproc)
