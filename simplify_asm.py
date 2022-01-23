@@ -40,7 +40,7 @@ def process_file(orig_asm):
 def main():
     import argparse
 
-    parser = argparse.ArgumentParser(description='Simply preprocessed glibc assembly files.')
+    parser = argparse.ArgumentParser(description='Simplify preprocessed glibc assembly files.')
     parser.add_argument('file', nargs='+', help='files to simplify')
     parser.add_argument('-o', '--output', type=Path, help='directory to output to')
     args = parser.parse_args()
