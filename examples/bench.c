@@ -1,30 +1,62 @@
 #include <stdio.h>
+#include <stdlib.h>
 #include <string.h>
 
-#include <windows.h>
 #include <libmemcpy.h>
+
+#ifdef WIN32
+#include <windows.h>
+#else
+#include <time.h>
+
+inline static void timespec_duration(struct timespec *start,
+    struct timespec *end, struct timespec *duration) {
+    duration->tv_sec = end->tv_sec - start->tv_sec;
+    if (end->tv_nsec < start->tv_nsec) {
+        duration->tv_nsec = end->tv_nsec + 1000000000L - start->tv_nsec;
+        duration->tv_sec--; /* Borrow a second-> */
+    } else {
+        duration->tv_nsec = end->tv_nsec - start->tv_nsec;
+    }
+}
+#endif
 
 const int SZ = 2560 * 1440 * 4;
 const int ITERS = 10000;
 
-static void time(char *name, memcpy_t *t, char *src, char *dst, int sz) {
+static void bench(char *name, memcpy_t *t, char *src, char *dst, int sz) {
     printf("%s, %d iterations: ", name, ITERS);
 
+#ifdef WIN32
     LARGE_INTEGER freq;
     QueryPerformanceFrequency(&freq);
 
     LARGE_INTEGER start;
     QueryPerformanceCounter(&start);
+#else
+    struct timespec start;
+    clock_gettime(CLOCK_MONOTONIC, &start);
+#endif
 
     for (int i = 0; i < ITERS; i++) {
-      (*t)(dst, src, sz);
+        (*t)(dst, src, sz);
     }
 
+#ifdef WIN32
     LARGE_INTEGER end;
     QueryPerformanceCounter(&end);
 
     double time = (end.QuadPart - start.QuadPart) / (double)freq.QuadPart *
-			1000 * 1000 / ITERS;
+        1000 * 1000 / ITERS;
+#else
+    struct timespec end;
+    clock_gettime(CLOCK_MONOTONIC, &end);
+
+    struct timespec duration;
+    timespec_duration(&start, &end, &duration);
+    double time = duration.tv_sec * 1000.0 * 1000.0 + duration.tv_nsec / 1000.0;
+    time /= ITERS;
+#endif
     printf("%.4f us/copy\n", time);
 }
 
@@ -37,7 +69,7 @@ int main(void) {
         dst[i] = 0;
     }
 
-    time("libmemcpy", memcpy_fast, src, dst, SZ);
-    time("system memcpy", &memcpy, src, dst, SZ);
+    bench("libmemcpy", memcpy_fast, src, dst, SZ);
+    bench("system memcpy", &memcpy, src, dst, SZ);
     return 0;
 }

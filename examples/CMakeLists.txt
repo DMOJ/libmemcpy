@@ -1,4 +1,4 @@
-set(LIBMEMCPY_EXAMPLES detect.c)
+set(LIBMEMCPY_EXAMPLES bench.c detect.c)
 
 add_custom_target(examples)
 
