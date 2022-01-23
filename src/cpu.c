@@ -137,8 +137,10 @@ static void populate_features(uint32_t ecx, uint32_t edx) {
 
     if (vendor == VENDOR_AMD && family == 0x15) {
         // Excavator
-        fast_copy_backward = true;
-        avx_fast_unaligned_load = false;
+        if (model >= 0x60 && model <= 0x7f) {
+            fast_copy_backward = true;
+            avx_fast_unaligned_load = false;
+        }
     }
 }
 
@@ -363,8 +365,8 @@ static void init_cpu_flags(void) {
 
         // avoid short distance rep movsb on processors with fsrm
         if (fsrm)
-          __x86_string_control |=
-              X86_STRING_CONTROL_AVOID_SHORT_DISTANCE_REP_MOVSB;
+            __x86_string_control |=
+                X86_STRING_CONTROL_AVOID_SHORT_DISTANCE_REP_MOVSB;
     }
 
     memcpy_fast = select_memcpy();
