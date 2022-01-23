@@ -52,12 +52,10 @@ long int __x86_rep_movsb_stop_threshold = 1024 * 1024 * 3 / 4;
    are used at runtime to tune implementation behavior.  */
 int __x86_string_control;
 
-union manufacturer {
-    char id[12];
-    struct {
-        uint32_t ebx, edx, ecx;
-    };
-};
+union {
+    uint32_t words[12];
+    char *name[48];
+} brand;
 
 enum vendor {
     VENDOR_INTEL,
@@ -66,6 +64,7 @@ enum vendor {
 };
 
 static uint32_t max_cpuid;
+static uint32_t max_ext;
 static enum vendor vendor;
 static uint32_t family;
 static uint32_t model;
@@ -184,17 +183,13 @@ inline static int64_t decode_amd_assoc(uint64_t size, uint32_t reg) {
 }
 
 static void populate_amd_cache(void) {
-    uint32_t max_ext;
+    if (max_ext < 0x80000005)
+        return;
 
     uint32_t eax;
     uint32_t ebx;
     uint32_t ecx;
     uint32_t edx;
-    __cpuid(0x80000000, max_ext, ebx, ecx, edx);
-
-    if (max_ext < 0x80000005)
-        return;
-
     __cpuid(0x80000005, eax, ebx, ecx, edx);
     l1i_size = (edx >> 14) & 0x3fc00;
     l1i_line = edx & 0xff;
@@ -307,6 +302,8 @@ static void init_cpu_flags(void) {
         vendor = VENDOR_UNKNOWN;
 
     uint32_t eax, ebx, ecx, edx;
+    __cpuid(0x80000000, max_ext, ebx, ecx, edx);
+
     if (max_cpuid >= 1) {
         __cpuid(1, eax, ebx, ecx, edx);
         family = (eax >> 8) & 0xf;
@@ -326,6 +323,15 @@ static void init_cpu_flags(void) {
             break;
         default:
             break;
+    }
+
+    if (max_ext >= 0x80000004) {
+        __cpuid(0x80000002, brand.words[0], brand.words[1],
+                brand.words[2], brand.words[3]);
+        __cpuid(0x80000003, brand.words[4], brand.words[5],
+                brand.words[6], brand.words[7]);
+        __cpuid(0x80000004, brand.words[8], brand.words[9],
+                brand.words[10], brand.words[11]);
     }
 
     if (data > 0xFF) {
@@ -376,6 +382,7 @@ void libmemcpy_report_cpu(void) {
 
     printf("CPU: %s family %" PRIx32 "h, model %" PRIx32 "h, stepping %"
            PRIx32 "h\n", vendor_name, family, model, stepping);
+    printf("Brand: %s\n", brand.name);
     printf("L1 data: %" PRId64 " bytes total, %" PRId64 " bytes per line\n",
            l1i_size, l1i_line);
     printf("L1 data: %" PRId64 " bytes total, %" PRId64 " bytes per line, %"
