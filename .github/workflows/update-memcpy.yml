@@ -5,72 +5,17 @@ jobs:
     if: github.repository == 'DMOJ/libmemcpy'
     runs-on: ubuntu-latest
     steps:
+    - uses: actions/checkout@v2
     - name: Update memcpy implementations
-      run: |
-        cd /tmp
-        mkdir impls
-
-        git clone --depth 1 https://sourceware.org/git/glibc.git
-        cd glibc
-        git checkout master
-        mkdir build
-        cd build
-
-        ../configure --prefix=/tmp
-        make -j$(nproc)
-
-        for impl in ../sysdeps/x86_64/multiarch/mem{cpy,move}*.S; do
-          gcc "${impl}" \
-            -c \
-            -I../include \
-            -I./string \
-            -I./ \
-            -I../sysdeps/unix/sysv/linux/x86_64/64 \
-            -I../sysdeps/unix/sysv/linux/x86_64 \
-            -I../sysdeps/unix/sysv/linux/x86/include \
-            -I../sysdeps/unix/sysv/linux/x86 \
-            -I../sysdeps/x86/nptl \
-            -I../sysdeps/unix/sysv/linux/wordsize-64 \
-            -I../sysdeps/x86_64/nptl \
-            -I../sysdeps/unix/sysv/linux/include \
-            -I../sysdeps/unix/sysv/linux \
-            -I../sysdeps/nptl \
-            -I../sysdeps/pthread \
-            -I../sysdeps/gnu \
-            -I../sysdeps/unix/inet \
-            -I../sysdeps/unix/sysv \
-            -I../sysdeps/unix/x86_64 \
-            -I../sysdeps/unix \
-            -I../sysdeps/posix \
-            -I../sysdeps/x86_64/64 \
-            -I../sysdeps/x86_64/fpu/multiarch \
-            -I../sysdeps/x86_64/fpu \
-            -I../sysdeps/x86/fpu \
-            -I../sysdeps/x86_64/multiarch \
-            -I../sysdeps/x86_64 \
-            -I../sysdeps/x86/include \
-            -I../sysdeps/x86 \
-            -I../sysdeps/ieee754/float128 \
-            -I../sysdeps/ieee754/ldbl-96/include \
-            -I../sysdeps/ieee754/ldbl-96 \
-            -I../sysdeps/ieee754/dbl-64 \
-            -I../sysdeps/ieee754/flt-32 \
-            -I../sysdeps/wordsize-64 \
-            -I../sysdeps/ieee754 \
-            -I../sysdeps/generic \
-            -I.. \
-            -I../libio \
-            -I. \
-            -D_LIBC_REENTRANT \
-            -include ./libc-modules.h \
-            -DMODULE_NAME=libc \
-            -include ../include/libc-symbols.h \
-            -DPIC \
-            -DSHARED \
-            -DTOP_NAMESPACE=glibc \
-            -DASSEMBLER \
-            -g \
-            -S \
-            > "/tmp/impls/$(basename "${impl}")" || true
-        done
-        grep "" /tmp/impls/*.S
+      run: ./fetch_impls.sh
+    - name: Create pull request
+      uses: peter-evans/create-pull-request@v3
+      with:
+        token: ${{ secrets.REPO_SCOPED_TOKEN }}
+        author: dmoj-build <build@dmoj.ca>
+        committer: dmoj-build <build@dmoj.ca>
+        commit-message: 'impls: fetch from upstream glibc'
+        title: 'Update implementations from upstream glibc'
+        body: This PR has been auto-generated to update memcpy implementations from upstream glibc.
+        reviewers: Xyene, quantum5
+        branch: update-impls
