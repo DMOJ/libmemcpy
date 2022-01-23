@@ -21,6 +21,12 @@ jobs:
       run: |
         cd build
         make -j$(nproc)
+    - name: Build examples
+      run: |
+        cd build
+        make -j$(nproc) examples
+    - name: Test detect
+      run: ./build/examples/detect
 
   windows-native:
     runs-on: windows-latest
@@ -35,3 +41,9 @@ jobs:
       run: |
         cd build
         mingw32-make "-j$([Environment]::ProcessorCount)"
+    - name: Build examples
+      run: |
+        cd build
+        mingw32-make "-j$([Environment]::ProcessorCount)" examples
+    - name: Test detect
+      run: build\examples\detect
