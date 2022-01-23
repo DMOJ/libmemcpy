@@ -119,6 +119,10 @@ memcpy_t mempcpy_sse2_unaligned_erms;
 memcpy_t mempcpy_ssse3;
 memcpy_t mempcpy_ssse3_back;
 
+const char *libmemcpy_memcpy_name(memcpy_t *func);
+const char *libmemcpy_memmove_name(memcpy_t *func);
+const char *libmemcpy_mempcpy_name(memcpy_t *func);
+
 // END GENERATED CODE
 
 void libmemcpy_report_cpu(void);

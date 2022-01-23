@@ -287,10 +287,6 @@ memcpy_t *mempcpy_fast;
 
 #define CONCAT2(a, b) a ## b
 #define CONCAT(a, b) CONCAT2(a, b)
-#define STRINGIFY(x) #x
-
-#define RESULT_TYPE memcpy_t *
-#define RESULT(x) x
 
 #define FUNCTION memcpy
 #include "select.h"
@@ -301,16 +297,6 @@ memcpy_t *mempcpy_fast;
 #undef FUNCTION
 
 #define FUNCTION mempcpy
-#include "select.h"
-#undef FUNCTION
-
-#undef RESULT
-#define RESULT(x) STRINGIFY(x)
-#undef RESULT_TYPE
-#define RESULT_TYPE const char *
-
-#define FUNC_NAME select_memcpy_name
-#define FUNCTION memcpy
 #include "select.h"
 #undef FUNCTION
 
@@ -431,5 +417,5 @@ void libmemcpy_report_cpu(void) {
            " bytes shared\n", data, core, shared);
     printf("AVX: %d, AVX2: %d, ERMS: %d, FSRM: %d\n", avx, avx2, erms, fsrm);
     printf("RTM: %d, XMM: %d, YMM: %d\n", rtm, xmm, ymm);
-    printf("memcpy selected: %s\n", select_memcpy_name());
+    printf("memcpy selected: %s\n", libmemcpy_memcpy_name(memcpy_fast));
 }

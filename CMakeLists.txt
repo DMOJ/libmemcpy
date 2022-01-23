@@ -11,7 +11,8 @@ endif()
 add_library(memcpy STATIC
     src/cpu.c
     "${LIBMEMCPY_PLATFORM_FILES}"
-# BEGIN CMAKE ASM FILES
+# BEGIN GENERATED FILES
+    src/names-memcpy.c
     impls/memcpy-ssse3-back.s
     impls/memcpy-ssse3.s
     impls/memmove-avx-unaligned-erms-rtm.s
@@ -22,7 +23,7 @@ add_library(memcpy STATIC
     impls/memmove-sse2-unaligned-erms.s
     impls/memmove-ssse3-back.s
     impls/memmove-ssse3.s
-# END CMAKE ASM FILES
+# END GENERATED FILES
 )
 
 target_include_directories(memcpy
