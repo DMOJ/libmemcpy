@@ -24,7 +24,7 @@ inline static void timespec_duration(struct timespec *start,
 const int SZ = 2560 * 1440 * 4;
 const int ITERS = 10000;
 
-static void bench(char *name, memcpy_t *t, char *src, char *dst, int sz) {
+static void bench(const char *name, memcpy_t *t, char *src, char *dst, int sz) {
     printf("%s, %d iterations: ", name, ITERS);
 
 #ifdef WIN32
@@ -69,7 +69,11 @@ int main(void) {
         dst[i] = 0;
     }
 
-    bench("libmemcpy", memcpy_fast, src, dst, SZ);
     bench("system memcpy", &memcpy, src, dst, SZ);
+    bench("libmemcpy_fast", memcpy_fast, src, dst, SZ);
+
+    for (memcpy_t **func = libmemcpy_memcpy_available(NULL); *func; ++func) {
+        bench(libmemcpy_memcpy_name(*func), *func, src, dst, SZ);
+    }
     return 0;
 }
