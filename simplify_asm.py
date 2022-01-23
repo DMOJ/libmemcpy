@@ -4,6 +4,7 @@ import re
 from pathlib import Path
 
 reglobl = re.compile(r'\.globl\s+(\w+)')
+reset = re.compile(r'\.set\s+(\w+)\s*,\s*(\w+)')
 
 
 def process_file(orig_asm):
@@ -13,28 +14,40 @@ def process_file(orig_asm):
     with open(orig_asm, 'r') as f:
         for line in f:
             line = line.rstrip()
-            if line.startswith('#'):
+            if line.startswith(('#', '.symver')):
                 continue
             elif '.section' in line:
                 line = line.partition(',')[0]
             elif '.globl' in line:
-                line = line.partition(';')[0]
+                globl = line.partition(';')[0]
                 in_chk = False
-                match = reglobl.match(line)
-                if match:
-                    if '_chk_' in match.group(1):
-                        in_chk = True
-                        continue
-
-                    lines.append(line)
-                    lines.append(f'{match.group(1)}:')
+                match = reglobl.match(globl)
+                if not match:
                     continue
+
+                symbol = match.group(1).strip()
+                if '_chk_' in symbol:
+                    in_chk = True
+                    continue
+
+                lines.append(globl.strip())
+
+                match = reset.search(line)
+                if match:
+                    lines.append(f'.set {match.group(1)}, {match.group(2)}')
+                    lines.append('')
+                else:
+                    lines.append(f'{symbol}:')
+                continue
             elif '.cfi_endproc' in line:
                 continue
 
             if not in_chk and (line or (lines and lines[-1])):
                 lines.append(line)
-    return '\n'.join(lines) + '\n'
+
+    if lines and lines[-1]:
+        lines.append('')
+    return '\n'.join(lines)
 
 
 def main():
