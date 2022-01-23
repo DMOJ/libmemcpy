@@ -33,3 +33,5 @@ target_include_directories(memcpy
     PRIVATE
         src
 )
+
+add_subdirectory(examples EXCLUDE_FROM_ALL)
