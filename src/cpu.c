@@ -133,10 +133,22 @@ static void populate_features(uint32_t ecx, uint32_t edx) {
             case 0x4d:
             case 0x5d:
                 // Silvermont
+                // Also: fast unaligned load, slow SSE 4.2
+                fast_unaligned_copy = true;
+                break;
             case 0x86:
             case 0x96:
             case 0x9c:
                 // Tremont
+                // Also: fast rep string, fast unaligned load
+                fast_unaligned_copy = true;
+                break;
+            default:
+                // Unknown family 0x06 processors. Assuming this is a Core
+                // i3/i5/i7 processor if AVX is available.
+                if (!avx)
+                  break;
+                // Fall through
             case 0x1a:
             case 0x1e:
             case 0x1f:
