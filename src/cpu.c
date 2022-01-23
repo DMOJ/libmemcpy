@@ -419,8 +419,8 @@ void libmemcpy_report_cpu(void) {
     printf("CPU: %s family %" PRIx32 "h, model %" PRIx32 "h, stepping %"
            PRIx32 "h\n", vendor_name, family, model, stepping);
     printf("Brand: %s\n", brand.name);
-    printf("L1 data: %" PRId64 " bytes total, %" PRId64 " bytes per line\n",
-           l1i_size, l1i_line);
+    printf("L1 instruction: %" PRId64 " bytes total, %" PRId64
+            " bytes per line\n", l1i_size, l1i_line);
     printf("L1 data: %" PRId64 " bytes total, %" PRId64 " bytes per line, %"
            PRId64 "-way associative\n", l1d_size, l1d_line, l1d_assoc);
     printf("L2 data: %" PRId64 " bytes total, %" PRId64 " bytes per line, %"
