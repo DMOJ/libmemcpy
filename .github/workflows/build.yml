@@ -27,6 +27,8 @@ jobs:
         make -j$(nproc) examples
     - name: Test detect
       run: ./build/examples/detect
+    - name: Run benchmark
+      run: ./build/examples/bench
 
   windows-native:
     runs-on: windows-latest
@@ -47,3 +49,5 @@ jobs:
         mingw32-make "-j$([Environment]::ProcessorCount)" examples
     - name: Test detect
       run: build\examples\detect
+    - name: Run benchmark
+      run: build\examples\bench
