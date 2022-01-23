@@ -18,6 +18,10 @@
  * USA
  */
 
+#include <cpuid.h>
+#include <stdint.h>
+#include <string.h>
+
 /* Data cache size for use in memory and string routines, typically
    L1 size, rounded to multiple of 256 bytes.  */
 long int __x86_data_cache_size_half = 32 * 1024 / 2;
@@ -47,8 +51,38 @@ long int __x86_rep_movsb_stop_threshold = 1024 * 1024 * 3 / 4;
    are used at runtime to tune implementation behavior.  */
 int __x86_string_control;
 
+union manufacturer {
+    char id[12];
+    struct {
+        uint32_t ebx, edx, ecx;
+    };
+};
+
+enum vendor {
+    VENDOR_INTEL,
+    VENDOR_AMD,
+    VENDOR_UNKNOWN,
+};
+
+static enum vendor vendor;
 
 __attribute__((constructor))
 static void init_cpu_flags(void) {
-    // TODO: implement this.
+    unsigned max_cpuid;
+    union {
+        char id[12];
+        struct {
+            uint32_t ebx, edx, ecx;
+        };
+    } manufacturer;
+
+    __cpuid(0, max_cpuid, manufacturer.ebx, manufacturer.ecx, manufacturer.edx);
+    if (memcmp(manufacturer.id, "AuthenticAMD", 12) == 0)
+        vendor = VENDOR_AMD;
+    else if (memcmp(manufacturer.id, "GenuineIntel", 12) == 0)
+        vendor = VENDOR_INTEL;
+    else
+        vendor = VENDOR_UNKNOWN;
+
+    // TODO: implement cache size detection.
 }
