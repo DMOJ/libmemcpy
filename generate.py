@@ -19,6 +19,7 @@ def get_functions():
                     name = match.group(1)
                     if name.startswith('__mem'):
                         result.append(name.lstrip('_'))
+    result.sort()
     return result
 
 
