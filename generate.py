@@ -97,7 +97,7 @@ def update_cmake():
         for line in preamble:
             f.write(line)
 
-        for file in glob(IMPL_GLOB):
+        for file in sorted(glob(IMPL_GLOB)):
             print(f'    {Path(file).relative_to(DIR).as_posix()}', file=f)
 
         for line in postamble:
