@@ -2,8 +2,15 @@ cmake_minimum_required(VERSION 3.0)
 project(libmemcpy LANGUAGES C ASM-ATT)
 set(CMAKE_C_STANDARD 99)
 
+if (WIN32)
+    set(LIBMEMCPY_PLATFORM_FILES src/mingw-shim.s)
+else()
+    set(LIBMEMCPY_PLATFORM_FILES "")
+endif()
+
 add_library(memcpy STATIC
-	src/cpu.c
+    src/cpu.c
+    "${LIBMEMCPY_PLATFORM_FILES}"
 # BEGIN CMAKE ASM FILES
     impls/memmove-avx-unaligned-erms.s
     impls/memcpy-ssse3.s
@@ -19,7 +26,7 @@ add_library(memcpy STATIC
 )
 
 target_include_directories(memcpy
-	PUBLIC
-		$<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>
-		$<INSTALL_INTERFACE:include>
+    PUBLIC
+        $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>
+        $<INSTALL_INTERFACE:include>
 )
