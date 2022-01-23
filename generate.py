@@ -11,7 +11,7 @@ reglobl = re.compile(r'\.globl\s+(\w+)')
 def get_functions():
     result = []
 
-    for file in glob(str(DIR / 'impls' / '*.S')):
+    for file in glob(str(DIR / 'impls' / '*.s')):
         with open(file) as f:
             for line in f:
                 match = reglobl.search(line)

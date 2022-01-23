@@ -79,7 +79,7 @@ for impl in ../sysdeps/x86_64/multiarch/mem{cpy,move}-*.S; do
     -DASSEMBLER \
     -g \
     -S \
-    > "${workdir}/impls/${impl_basename}"
+    > "${workdir}/impls/${impl_basename%.S}.s"
 done
 
 mkdir -p "${dir}/impls"
