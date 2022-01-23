@@ -71,6 +71,6 @@ jobs:
             -DASSEMBLER \
             -g \
             -S \
-            > "/tmp/impls/$(basename "${impl}")"
+            > "/tmp/impls/$(basename "${impl}")" || true
         done
         grep "" /tmp/impls/*.S
