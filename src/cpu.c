@@ -111,6 +111,7 @@ static void populate_features(uint32_t ecx, uint32_t edx) {
 
     avx_fast_unaligned_load = avx && avx2 && ymm;
 
+    // Based off of sysdeps/x86/cpu-features.c:init_cpu_features
     if (vendor == VENDOR_INTEL && family == 0x06) {
         switch (model) {
             case 0x1c:
