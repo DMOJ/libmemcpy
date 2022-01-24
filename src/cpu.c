@@ -74,17 +74,31 @@ static bool osxsave;
 static bool ssse3;
 static bool avx;
 static bool avx2;
+static bool avx512f;
+static bool avx512er;
+static bool avx512vl;
+static bool avx512vnni;
 static bool erms;
 static bool fsrm;
 static bool rtm;
 static bool xmm;
 static bool ymm;
+static bool zmm;
 static bool avx_fast_unaligned_load;
+static bool prefer_no_avx512;
+static bool prefer_no_vzeroupper;
 static bool fast_unaligned_copy;
 static bool fast_copy_backward;
 
 #define BIT_XMM_STATE (1 << 1)
 #define BIT_YMM_STATE (2 << 1)
+#define BIT_OPMASK_STATE (1 << 5)
+#define BIT_ZMM0_15_STATE (1 << 6)
+#define BIT_ZMM16_31_STATE (1 << 7)
+
+#define BITS_ALL_YMM_STATE (BIT_XMM_STATE | BIT_YMM_STATE)
+#define BITS_ALL_ZMM_STATE \
+    (BIT_OPMASK_STATE | BIT_ZMM0_15_STATE | BIT_ZMM16_31_STATE)
 
 static void populate_features(uint32_t ecx, uint32_t edx) {
     osxsave = ecx & (1 << 27);
@@ -96,6 +110,10 @@ static void populate_features(uint32_t ecx, uint32_t edx) {
         __cpuid_count(7, 0, eax, ebx, ecx, edx);
 
         avx2 = ebx & (1 << 5);
+        avx512f = ebx & (1 << 16);
+        avx512er = ebx & (1 << 27);
+        avx512vl = ebx & (1 << 31);
+        avx512vnni = ecx & (1 << 11);
         erms = ebx & (1 << 9);
         fsrm = edx & (1 << 4);
         rtm = (ebx & (1 << 11)) && !(edx & (1 << 11));
@@ -105,10 +123,12 @@ static void populate_features(uint32_t ecx, uint32_t edx) {
         uint32_t xcrlow, xcrhigh;
         __asm__("xgetbv" : "=a"(xcrlow), "=d"(xcrhigh) : "c"(0));
         xmm = xcrlow & BIT_XMM_STATE;
-        ymm = (xcrlow & (BIT_XMM_STATE | BIT_YMM_STATE)) ==
-            (BIT_XMM_STATE | BIT_YMM_STATE);
+        ymm = (xcrlow & BITS_ALL_YMM_STATE) == BITS_ALL_YMM_STATE;
+        zmm = (xcrlow & BITS_ALL_ZMM_STATE) == BITS_ALL_ZMM_STATE;
     }
 
+    prefer_no_avx512 = !avx512er && !avx512vnni;
+    prefer_no_vzeroupper = avx512er || rtm;
     avx_fast_unaligned_load = avx && avx2 && ymm;
 
     // Based off of sysdeps/x86/cpu-features.c:init_cpu_features
@@ -447,7 +467,8 @@ void libmemcpy_report_cpu(void) {
            PRId64 "-way associative\n", l3_size, l3_line, l3_assoc);
     printf("By usage: %" PRId64 " bytes data, %" PRId64 " bytes core, %" PRId64
            " bytes shared\n", data, core, shared);
-    printf("AVX: %d, AVX2: %d, ERMS: %d, FSRM: %d\n", avx, avx2, erms, fsrm);
+    printf("AVX: %d, AVX2: %d, AVX512F: %d, AVX512VL: %d, ERMS: %d, FSRM: %d\n",
+           avx, avx2, avx512f, avx512vl, erms, fsrm);
     printf("RTM: %d, XMM: %d, YMM: %d\n", rtm, xmm, ymm);
     printf("memcpy selected: %s\n", libmemcpy_memcpy_name(memcpy_fast));
     puts("memcpy available:");

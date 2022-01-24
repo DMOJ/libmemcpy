@@ -1,13 +1,31 @@
 static memcpy_t *CONCAT(select_, FUNCTION)(void) {
+    if (avx512f && !prefer_no_avx512) {
+        if (avx512vl) {
+            if (erms)
+                return CONCAT(FUNCTION, _avx512_unaligned_erms);
+            return CONCAT(FUNCTION, _avx512_unaligned);
+        }
+        return CONCAT(FUNCTION, _avx512_no_vzeroupper);
+    }
+
     if (avx_fast_unaligned_load) {
+        if (avx512vl) {
+            if (erms)
+                return CONCAT(FUNCTION, _evex_unaligned_erms);
+            return CONCAT(FUNCTION, _evex_unaligned);
+        }
+
         if (rtm) {
             if (erms)
                 return CONCAT(FUNCTION, _avx_unaligned_erms_rtm);
             return CONCAT(FUNCTION, _avx_unaligned_rtm);
         }
-        if (erms)
-            return CONCAT(FUNCTION, _avx_unaligned_erms);
-        return CONCAT(FUNCTION, _avx_unaligned);
+
+        if (!prefer_no_vzeroupper) {
+            if (erms)
+                return CONCAT(FUNCTION, _avx_unaligned_erms);
+            return CONCAT(FUNCTION, _avx_unaligned);
+        }
     }
 
     if (!ssse3 || fast_unaligned_copy) {
@@ -38,6 +56,16 @@ static int CONCAT(available_, FUNCTION)(memcpy_t **functions) {
         functions[count++] = CONCAT(FUNCTION, _ssse3_back);
         functions[count++] = CONCAT(FUNCTION, _ssse3);
     }
+
+    if (avx512vl) {
+        functions[count++] = CONCAT(FUNCTION, _evex_unaligned);
+        functions[count++] = CONCAT(FUNCTION, _evex_unaligned_erms);
+        functions[count++] = CONCAT(FUNCTION, _avx512_unaligned);
+        functions[count++] = CONCAT(FUNCTION, _avx512_unaligned_erms);
+    }
+
+    if (avx512f)
+        functions[count++] = CONCAT(FUNCTION, _avx512_no_vzeroupper);
 
     functions[count++] = CONCAT(FUNCTION, _sse2_unaligned);
     functions[count++] = CONCAT(FUNCTION, _sse2_unaligned_erms);
