@@ -26,6 +26,7 @@ const int ITERS = 10000;
 
 static void bench(const char *name, memcpy_t *t, char *src, char *dst, int sz) {
     printf("%s, %d iterations: ", name, ITERS);
+    fflush(stdout);
 
 #ifdef WIN32
     LARGE_INTEGER freq;
