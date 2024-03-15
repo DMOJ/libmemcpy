@@ -29,6 +29,7 @@ def get_functions():
                     name = match.group(1)
                     if name.startswith('__mem'):
                         name = name.lstrip('_')
+			print('Found `%s` in "%s"' % (name, file))
                         functions.append(name)
                         function_xmm[name] = xmm_usage[file]
 
@@ -36,6 +37,7 @@ def get_functions():
                 if match:
                     xmm_usage[file].add(int(match.group(1)))
 
+    functions = list(set(functions))
     functions.sort()
     return functions, function_xmm
 
