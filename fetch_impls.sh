@@ -82,5 +82,6 @@ for impl in ../sysdeps/x86_64/multiarch/memmove-*.S; do
     > "${workdir}/impls/${impl_basename%.S}.s"
 done
 
-mkdir -p "${dir}/impls"
+rm -rf "${dir}/impls" 
+mkdir "${dir}/impls"
 "${dir}/simplify_asm.py" "${workdir}/impls/"* -o "${dir}/impls"
