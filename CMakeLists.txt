@@ -18,15 +18,13 @@ add_library(memcpy STATIC
     "${LIBMEMCPY_PLATFORM_FILES}"
 # BEGIN GENERATED FILES
     src/names-memcpy.c
-    impls/memcpy-ssse3-back.s
-    impls/memcpy-ssse3.s
     impls/memmove-avx-unaligned-erms-rtm.s
     impls/memmove-avx-unaligned-erms.s
     impls/memmove-avx512-no-vzeroupper.s
     impls/memmove-avx512-unaligned-erms.s
+    impls/memmove-erms.s
     impls/memmove-evex-unaligned-erms.s
     impls/memmove-sse2-unaligned-erms.s
-    impls/memmove-ssse3-back.s
     impls/memmove-ssse3.s
 # END GENERATED FILES
 )
