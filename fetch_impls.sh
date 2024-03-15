@@ -20,7 +20,7 @@ cd glibc/build
 ../configure --prefix="${workdir}"
 make -j$(nproc)
 
-for impl in ../sysdeps/x86_64/multiarch/mem{cpy,move}-*.S; do
+for impl in ../sysdeps/x86_64/multiarch/memmove-*.S; do
   impl_basename="$(basename "${impl}")"
   case "${impl_basename}" in
     # Only ever included by other copy implementations with differing values of
