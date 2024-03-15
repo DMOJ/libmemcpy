@@ -77,6 +77,7 @@ for impl in ../sysdeps/x86_64/multiarch/memmove-*.S; do
     -DSHARED \
     -DTOP_NAMESPACE=glibc \
     -DASSEMBLER \
+    -DISA_DEFAULT_IMPL \
     -g \
     -S \
     > "${workdir}/impls/${impl_basename%.S}.s"
