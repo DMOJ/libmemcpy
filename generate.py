@@ -37,7 +37,6 @@ def get_functions():
                 if match:
                     xmm_usage[file].add(int(match.group(1)))
 
-    functions = list(set(functions))
     functions.sort()
     return functions, function_xmm
 
