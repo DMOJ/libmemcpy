@@ -17,7 +17,7 @@ git clone --depth 1 https://sourceware.org/git/glibc.git
 mkdir glibc/build
 cd glibc/build
 
-../configure --prefix="${workdir}" --with-cpu=core2
+../configure --prefix="${workdir}" CC="gcc -march=core2"
 make -j$(nproc)
 
 for impl in ../sysdeps/x86_64/multiarch/memmove-*.S; do
