@@ -45,7 +45,7 @@ __memmove_avx_unaligned_erms:
  vmovdqu -32(%rsi, %rdx), %ymm1
  vmovdqu %ymm0, (%rdi)
  vmovdqu %ymm1, -32(%rdi, %rdx)
-.Lreturn:
+.Lreturn_vzeroupper:
 
  vzeroupper; ret
  .p2align 4
@@ -293,7 +293,8 @@ __memmove_avx_unaligned_erms:
  cmp __x86_rep_movsb_stop_threshold(%rip), %rdx
  jae .Llarge_memcpy_2x_check
 
- testl $(1 << 0), __x86_string_control(%rip)
+ testb $(1 << 0), __x86_string_control(%rip)
+
  jz .Lskip_short_movsb_check
  cmpl $-64, %ecx
  ja .Lmore_8x_vec_forward
@@ -323,9 +324,11 @@ __memmove_avx_unaligned_erms:
  .p2align 4,, 10
 
 .Llarge_memcpy_2x_check:
- cmp __x86_rep_movsb_threshold(%rip), %rdx
- jb .Lmore_8x_vec_check
+
 .Llarge_memcpy_2x:
+ mov __x86_shared_non_temporal_threshold(%rip), %r11
+ cmp %r11, %rdx
+ jb .Lmore_8x_vec_check
 
  negq %rcx
  cmpq %rcx, %rdx
@@ -349,17 +352,17 @@ __memmove_avx_unaligned_erms:
  addq %r8, %rdx
 
  notl %ecx
+ movq %rdx, %r10
  testl $(4096 - 32 * 8), %ecx
  jz .Llarge_memcpy_4x
 
- movq %rdx, %r10
- shrq $4, %r10
- cmp __x86_shared_non_temporal_threshold(%rip), %r10
+ shlq $4, %r11
+ cmp %r11, %rdx
  jae .Llarge_memcpy_4x
 
  andl $(4096 * 2 - 1), %edx
 
- shrq $((12 + 1) - 4), %r10
+ shrq $(12 + 1), %r10
 
  .p2align 4
 .Lloop_large_memcpy_2x_outer:
@@ -422,7 +425,6 @@ __memmove_avx_unaligned_erms:
 
  .p2align 4
 .Llarge_memcpy_4x:
- movq %rdx, %r10
 
  andl $(4096 * 4 - 1), %edx
 
