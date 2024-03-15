@@ -45,6 +45,7 @@ typedef void *memcpy_t(void *dst, const void *src, size_t len);
 #define memcpy_sse2_unaligned __memcpy_sse2_unaligned
 #define memcpy_sse2_unaligned_erms __memcpy_sse2_unaligned_erms
 #define memcpy_ssse3 __memcpy_ssse3
+#define memcpy_ssse3 __memcpy_ssse3
 #define memcpy_ssse3_back __memcpy_ssse3_back
 #define memmove_avx512_no_vzeroupper __memmove_avx512_no_vzeroupper
 #define memmove_avx512_unaligned __memmove_avx512_unaligned
@@ -73,6 +74,7 @@ typedef void *memcpy_t(void *dst, const void *src, size_t len);
 #define mempcpy_sse2_unaligned __mempcpy_sse2_unaligned
 #define mempcpy_sse2_unaligned_erms __mempcpy_sse2_unaligned_erms
 #define mempcpy_ssse3 __mempcpy_ssse3
+#define mempcpy_ssse3 __mempcpy_ssse3
 #define mempcpy_ssse3_back __mempcpy_ssse3_back
 #endif
 
@@ -88,6 +90,7 @@ memcpy_t memcpy_evex_unaligned;
 memcpy_t memcpy_evex_unaligned_erms;
 memcpy_t memcpy_sse2_unaligned;
 memcpy_t memcpy_sse2_unaligned_erms;
+memcpy_t memcpy_ssse3;
 memcpy_t memcpy_ssse3;
 memcpy_t memcpy_ssse3_back;
 memcpy_t memmove_avx512_no_vzeroupper;
@@ -116,6 +119,7 @@ memcpy_t mempcpy_evex_unaligned;
 memcpy_t mempcpy_evex_unaligned_erms;
 memcpy_t mempcpy_sse2_unaligned;
 memcpy_t mempcpy_sse2_unaligned_erms;
+memcpy_t mempcpy_ssse3;
 memcpy_t mempcpy_ssse3;
 memcpy_t mempcpy_ssse3_back;
 

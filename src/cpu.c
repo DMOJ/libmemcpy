@@ -306,9 +306,9 @@ memcpy_t *memcpy_fast;
 memcpy_t *memmove_fast;
 memcpy_t *mempcpy_fast;
 
-static memcpy_t *memcpy_available[15];
+static memcpy_t *memcpy_available[16];
 static memcpy_t *memmove_available[15];
-static memcpy_t *mempcpy_available[15];
+static memcpy_t *mempcpy_available[16];
 
 static int memcpy_available_count;
 static int memmove_available_count;
