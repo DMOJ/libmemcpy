@@ -24,44 +24,6 @@ __memmove_sse2_unaligned:
 
  ; ret
 
-.globl __mempcpy_erms
-__mempcpy_erms:
- mov %rdi, %rax
-
- test %rdx, %rdx
- jz 2f
- add %rdx, %rax
- jmp .Lstart_movsb
-
-.globl __memmove_erms
-__memmove_erms:
- movq %rdi, %rax
-
- test %rdx, %rdx
- jz 2f
-.Lstart_movsb:
- mov %rdx, %rcx
- cmp %rsi, %rdi
- jb 1f
-
- je 2f
- lea (%rsi,%rcx), %rdx
- cmp %rdx, %rdi
- jb .Lmovsb_backward
-1:
- rep movsb
-2:
- ret
-.Lmovsb_backward:
- leaq -1(%rdi,%rcx), %rdi
- leaq -1(%rsi,%rcx), %rsi
- std
- rep movsb
- cld
- ret
-.globl __memcpy_erms
-.set __memcpy_erms, __memmove_erms
-
 .globl __mempcpy_sse2_unaligned_erms
 __mempcpy_sse2_unaligned_erms:
  mov %rdi, %rax
@@ -83,7 +45,7 @@ __memmove_sse2_unaligned_erms:
  movups -16(%rsi, %rdx), %xmm1
  movups %xmm0, (%rdi)
  movups %xmm1, -16(%rdi, %rdx)
-.Lreturn:
+.Lreturn_vzeroupper:
 
  ret
  .p2align 4
@@ -297,9 +259,11 @@ __memmove_sse2_unaligned_erms:
  .p2align 4,, 10
 
 .Llarge_memcpy_2x_check:
- cmp __x86_rep_movsb_threshold(%rip), %rdx
- jb .Lmore_8x_vec_check
+
 .Llarge_memcpy_2x:
+ mov __x86_shared_non_temporal_threshold(%rip), %r11
+ cmp %r11, %rdx
+ jb .Lmore_8x_vec_check
 
  negq %rcx
  cmpq %rcx, %rdx
@@ -329,17 +293,17 @@ __memmove_sse2_unaligned_erms:
  addq %r8, %rdx
 
  notl %ecx
+ movq %rdx, %r10
  testl $(4096 - 16 * 8), %ecx
  jz .Llarge_memcpy_4x
 
- movq %rdx, %r10
- shrq $4, %r10
- cmp __x86_shared_non_temporal_threshold(%rip), %r10
+ shlq $4, %r11
+ cmp %r11, %rdx
  jae .Llarge_memcpy_4x
 
  andl $(4096 * 2 - 1), %edx
 
- shrq $((12 + 1) - 4), %r10
+ shrq $(12 + 1), %r10
 
  .p2align 4
 .Lloop_large_memcpy_2x_outer:
@@ -402,7 +366,6 @@ __memmove_sse2_unaligned_erms:
 
  .p2align 4
 .Llarge_memcpy_4x:
- movq %rdx, %r10
 
  andl $(4096 * 4 - 1), %edx
 
@@ -477,6 +440,3 @@ __memmove_sse2_unaligned_erms:
 
 .globl __memcpy_sse2_unaligned
 .set __memcpy_sse2_unaligned, __memmove_sse2_unaligned
-
-.globl __SI__memmove_sse2_unaligned_0
-__SI__memmove_sse2_unaligned_0:
