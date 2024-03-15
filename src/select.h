@@ -1,4 +1,7 @@
 static memcpy_t *CONCAT(select_, FUNCTION)(void) {
+    if (erms || fsrm)
+        return CONCAT(FUNCTION, _erms);
+
     if (avx512f && !prefer_no_avx512) {
         if (avx512vl) {
             if (erms)
@@ -28,16 +31,14 @@ static memcpy_t *CONCAT(select_, FUNCTION)(void) {
         }
     }
 
-    if (!ssse3 || fast_unaligned_copy) {
-        if (erms)
-            return CONCAT(FUNCTION, _sse2_unaligned_erms);
-        return CONCAT(FUNCTION, _sse2_unaligned);
+    if (ssse3 && !fast_unaligned_copy) {
+        return CONCAT(FUNCTION, _ssse3);
     }
 
-    if (fast_copy_backward)
-        return CONCAT(FUNCTION, _ssse3_back);
+    if (erms)
+        return CONCAT(FUNCTION, _sse2_unaligned_erms);
 
-    return CONCAT(FUNCTION, _ssse3);
+    return CONCAT(FUNCTION, _sse2_unaligned);
 }
 
 static int CONCAT(available_, FUNCTION)(memcpy_t **functions) {
@@ -53,7 +54,6 @@ static int CONCAT(available_, FUNCTION)(memcpy_t **functions) {
     }
 
     if (ssse3 && xmm) {
-        functions[count++] = CONCAT(FUNCTION, _ssse3_back);
         functions[count++] = CONCAT(FUNCTION, _ssse3);
     }
 
