@@ -29,6 +29,8 @@ const char *libmemcpy_memcpy_name(memcpy_t *func) {
         return "memcpy_sse2_unaligned_erms";
     if (func == memcpy_ssse3)
         return "memcpy_ssse3";
+    if (func == memcpy_ssse3)
+        return "memcpy_ssse3";
     if (func == memcpy_ssse3_back)
         return "memcpy_ssse3_back";
     return NULL;
@@ -91,6 +93,8 @@ const char *libmemcpy_mempcpy_name(memcpy_t *func) {
         return "mempcpy_sse2_unaligned";
     if (func == mempcpy_sse2_unaligned_erms)
         return "mempcpy_sse2_unaligned_erms";
+    if (func == mempcpy_ssse3)
+        return "mempcpy_ssse3";
     if (func == mempcpy_ssse3)
         return "mempcpy_ssse3";
     if (func == mempcpy_ssse3_back)

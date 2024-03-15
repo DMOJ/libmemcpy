@@ -24,6 +24,7 @@ add_library(memcpy STATIC
     impls/memmove-avx-unaligned-erms.s
     impls/memmove-avx512-no-vzeroupper.s
     impls/memmove-avx512-unaligned-erms.s
+    impls/memmove-erms.s
     impls/memmove-evex-unaligned-erms.s
     impls/memmove-sse2-unaligned-erms.s
     impls/memmove-ssse3-back.s
