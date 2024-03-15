@@ -1,4 +1,4 @@
-# `libmemcpy` [![Linux Build Status](https://img.shields.io/github/workflow/status/DMOJ/libmemcpy/build?logo=github)](https://github.com/DMOJ/libmemcpy/actions/workflows/build.yml)
+# `libmemcpy` [![Linux Build Status](https://img.shields.io/github/actions/workflow/status/DMOJ/libmemcpy/build.yml?branch=master&logo=github)](https://github.com/DMOJ/libmemcpy/actions/workflows/build.yml)
 
 `glibc` features very fast `memcpy` routines optimized for various architectures, and runtime logic to pick an optimal one for a given processor.
 
