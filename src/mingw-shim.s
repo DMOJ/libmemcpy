@@ -151,17 +151,7 @@ memcpy_erms:
 	movq	%rcx, %rdi
 	movq	%rdx, %rsi
 	movq	%r8,  %rdx
-	subq	$72, %rsp
-	movdqa	%xmm6, 0(%rsp)
-	movdqa	%xmm7, 16(%rsp)
-	movdqa	%xmm8, 32(%rsp)
-	movdqa	%xmm12, 48(%rsp)
 	call	__memcpy_erms
-	movdqa	0(%rsp), %xmm6
-	movdqa	16(%rsp), %xmm7
-	movdqa	32(%rsp), %xmm8
-	movdqa	48(%rsp), %xmm12
-	addq	$72, %rsp
 	popq	%rsi
 	popq	%rdi
 	ret
@@ -241,13 +231,21 @@ memcpy_ssse3:
 	movq	%rcx, %rdi
 	movq	%rdx, %rsi
 	movq	%r8,  %rdx
-	subq	$40, %rsp
+	subq	$104, %rsp
 	movdqa	%xmm6, 0(%rsp)
 	movdqa	%xmm7, 16(%rsp)
+	movdqa	%xmm8, 32(%rsp)
+	movdqa	%xmm9, 48(%rsp)
+	movdqa	%xmm10, 64(%rsp)
+	movdqa	%xmm11, 80(%rsp)
 	call	__memcpy_ssse3
 	movdqa	0(%rsp), %xmm6
 	movdqa	16(%rsp), %xmm7
-	addq	$40, %rsp
+	movdqa	32(%rsp), %xmm8
+	movdqa	48(%rsp), %xmm9
+	movdqa	64(%rsp), %xmm10
+	movdqa	80(%rsp), %xmm11
+	addq	$104, %rsp
 	popq	%rsi
 	popq	%rdi
 	ret
@@ -427,17 +425,7 @@ memmove_erms:
 	movq	%rcx, %rdi
 	movq	%rdx, %rsi
 	movq	%r8,  %rdx
-	subq	$72, %rsp
-	movdqa	%xmm6, 0(%rsp)
-	movdqa	%xmm7, 16(%rsp)
-	movdqa	%xmm8, 32(%rsp)
-	movdqa	%xmm12, 48(%rsp)
 	call	__memmove_erms
-	movdqa	0(%rsp), %xmm6
-	movdqa	16(%rsp), %xmm7
-	movdqa	32(%rsp), %xmm8
-	movdqa	48(%rsp), %xmm12
-	addq	$72, %rsp
 	popq	%rsi
 	popq	%rdi
 	ret
@@ -517,13 +505,21 @@ memmove_ssse3:
 	movq	%rcx, %rdi
 	movq	%rdx, %rsi
 	movq	%r8,  %rdx
-	subq	$40, %rsp
+	subq	$104, %rsp
 	movdqa	%xmm6, 0(%rsp)
 	movdqa	%xmm7, 16(%rsp)
+	movdqa	%xmm8, 32(%rsp)
+	movdqa	%xmm9, 48(%rsp)
+	movdqa	%xmm10, 64(%rsp)
+	movdqa	%xmm11, 80(%rsp)
 	call	__memmove_ssse3
 	movdqa	0(%rsp), %xmm6
 	movdqa	16(%rsp), %xmm7
-	addq	$40, %rsp
+	movdqa	32(%rsp), %xmm8
+	movdqa	48(%rsp), %xmm9
+	movdqa	64(%rsp), %xmm10
+	movdqa	80(%rsp), %xmm11
+	addq	$104, %rsp
 	popq	%rsi
 	popq	%rdi
 	ret
@@ -703,17 +699,7 @@ mempcpy_erms:
 	movq	%rcx, %rdi
 	movq	%rdx, %rsi
 	movq	%r8,  %rdx
-	subq	$72, %rsp
-	movdqa	%xmm6, 0(%rsp)
-	movdqa	%xmm7, 16(%rsp)
-	movdqa	%xmm8, 32(%rsp)
-	movdqa	%xmm12, 48(%rsp)
 	call	__mempcpy_erms
-	movdqa	0(%rsp), %xmm6
-	movdqa	16(%rsp), %xmm7
-	movdqa	32(%rsp), %xmm8
-	movdqa	48(%rsp), %xmm12
-	addq	$72, %rsp
 	popq	%rsi
 	popq	%rdi
 	ret
@@ -793,13 +779,21 @@ mempcpy_ssse3:
 	movq	%rcx, %rdi
 	movq	%rdx, %rsi
 	movq	%r8,  %rdx
-	subq	$40, %rsp
+	subq	$104, %rsp
 	movdqa	%xmm6, 0(%rsp)
 	movdqa	%xmm7, 16(%rsp)
+	movdqa	%xmm8, 32(%rsp)
+	movdqa	%xmm9, 48(%rsp)
+	movdqa	%xmm10, 64(%rsp)
+	movdqa	%xmm11, 80(%rsp)
 	call	__mempcpy_ssse3
 	movdqa	0(%rsp), %xmm6
 	movdqa	16(%rsp), %xmm7
-	addq	$40, %rsp
+	movdqa	32(%rsp), %xmm8
+	movdqa	48(%rsp), %xmm9
+	movdqa	64(%rsp), %xmm10
+	movdqa	80(%rsp), %xmm11
+	addq	$104, %rsp
 	popq	%rsi
 	popq	%rdi
 	ret
