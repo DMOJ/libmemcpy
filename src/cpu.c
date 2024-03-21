@@ -26,31 +26,37 @@
 #include <stdio.h>
 #include <string.h>
 
+#ifdef __MINGW64__
+    #define HIDDEN
+#else
+    #define HIDDEN __attribute__((__visibility__("hidden")))
+#endif
+
 /* Data cache size for use in memory and string routines, typically
    L1 size, rounded to multiple of 256 bytes.  */
-long int __x86_data_cache_size_half = 32 * 1024 / 2;
-long int __x86_data_cache_size = 32 * 1024;
+long int __x86_data_cache_size_half HIDDEN = 32 * 1024 / 2;
+long int __x86_data_cache_size HIDDEN = 32 * 1024;
 
 /* Shared cache size for use in memory and string routines, typically
    L2 or L3 size, rounded to multiple of 256 bytes.  */
-long int __x86_shared_cache_size_half = 1024 * 1024 / 2;
-long int __x86_shared_cache_size = 1024 * 1024;
+long int __x86_shared_cache_size_half HIDDEN = 1024 * 1024 / 2;
+long int __x86_shared_cache_size HIDDEN = 1024 * 1024;
 
 /* Threshold to use non temporal store.  */
 // Defaults to using 3/4 of shared cache size.
-long int __x86_shared_non_temporal_threshold = 1024 * 1024 * 3 / 4;
+long int __x86_shared_non_temporal_threshold HIDDEN = 1024 * 1024 * 3 / 4;
 
 /* Threshold to use Enhanced REP MOVSB.  */
-long int __x86_rep_movsb_threshold = 2048;
+long int __x86_rep_movsb_threshold HIDDEN = 2048;
 
 /* Threshold to stop using Enhanced REP MOVSB.  */
 // Defaults to non-temporal threshold.
-long int __x86_rep_movsb_stop_threshold = 1024 * 1024 * 3 / 4;
+long int __x86_rep_movsb_stop_threshold HIDDEN = 1024 * 1024 * 3 / 4;
 
 /* A bit-wise OR of string/memory requirements for optimal performance
    e.g. X86_STRING_CONTROL_AVOID_SHORT_DISTANCE_REP_MOVSB.  These bits
    are used at runtime to tune implementation behavior.  */
-int __x86_string_control;
+int __x86_string_control HIDDEN;
 
 union {
     uint32_t words[12];
