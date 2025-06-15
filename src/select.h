@@ -1,7 +1,4 @@
 static memcpy_t *CONCAT(select_, FUNCTION)(void) {
-    if (erms || fsrm)
-        return CONCAT(FUNCTION, _erms);
-
     if (avx512f && !prefer_no_avx512) {
         if (avx512vl) {
             if (erms)
