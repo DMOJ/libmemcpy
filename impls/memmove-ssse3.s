@@ -93,10 +93,10 @@ __memmove_ssse3:
 
  movups %xmm0, (%rdi)
 
- cmp __x86_shared_cache_size_half(%rip), %rdx
-
+ cmp __x86_shared_non_temporal_threshold(%rip), %rdx
  ja .Llarge_memcpy
 
+.Lloop_fwd:
  leaq -64(%rdi, %rdx), %r8
  andq $-16, %rdi
  movl $48, %edx
@@ -133,6 +133,10 @@ __memmove_ssse3:
 .Llarge_memcpy:
  movups -64(%r9, %rdx), %xmm10
  movups -80(%r9, %rdx), %xmm11
+
+ subq %rdi, %r9
+ cmpq %rdx, %r9
+ jb .Lloop_fwd
 
  sall $5, %ecx
  leal (%rcx, %rcx, 2), %r8d
